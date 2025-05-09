@@ -1,0 +1,11 @@
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: bezhan2009
+  name: premies_portal_db
+
+grpc:
+  host: 0.0.0.0
+  port: 50051
+  max_workers: 10

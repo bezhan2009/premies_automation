@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "github.com/bezhan2009/premies_portal/gen/go/card_prices";
+
+service CardPricesService {
+  rpc UploadCardPricesData (CardPricesUploadRequest) returns (CardPricesUploadResponse);
+}
+
+message CardPricesUploadRequest {
+  string file_path = 1;
+}
+
+message CardPricesUploadResponse {
+  string status = 1;
+}

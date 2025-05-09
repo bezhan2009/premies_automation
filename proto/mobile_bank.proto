@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bezhan2009/premies_portal/gen/go/mobile_bank";
+
+service MobileBankService {
+  rpc UploadMobileBankData (MobileBankUploadRequest) returns (MobileBankUploadResponse);
+  rpc CleanMobileBankTable (google.protobuf.Empty) returns (MobileBankCleanResponse);
+}
+
+message MobileBankUploadRequest {
+  string file_path = 1;
+}
+
+message MobileBankUploadResponse {
+  string status = 1;
+}
+
+message MobileBankCleanResponse {
+  string status = 1;
+}

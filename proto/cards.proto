@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bezhan2009/premies_portal/gen/go/cards";
+
+service CardsService {
+  rpc UploadCardsData (CardsUploadRequest) returns (CardsUploadResponse);
+  rpc CleanCardsTable (google.protobuf.Empty) returns (CardsCleanResponse);
+}
+
+message CardsUploadRequest {
+  string file_path = 1;
+}
+
+message CardsUploadResponse {
+  string status = 1;
+}
+
+message CardsCleanResponse {
+  string status = 1;
+}

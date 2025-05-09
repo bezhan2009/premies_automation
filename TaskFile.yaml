@@ -1,0 +1,91 @@
+version: "3"
+
+tasks:
+  setgenfiles:
+    aliases:
+      - set-gen
+      - stg
+    desc: "Sets gen folders"
+    cmds:
+      - mkdir ./gen/python
+      - mkdir ./gen/python/tus
+      - mkdir ./gen/python/mobile_bank
+      - mkdir ./gen/python/cards
+      - mkdir ./gen/python/card_prices
+      - mkdir ./gen/go
+      - mkdir ./gen/go/tus
+      - mkdir ./gen/go/mobile_bank
+      - mkdir ./gen/go/cards
+      - mkdir ./gen/go/card_prices
+
+  generatetus:
+    aliases:
+      - gen-tus
+    desc: "Generate Python code from tus proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/tus/ --grpc_python_out=./gen/python/tus/ proto/tus.proto
+
+  generatemobilebank:
+    aliases:
+      - gen-mob
+      - gen-mbank
+    desc: "Generate Python code from mobile bank proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/mobile_bank/ --grpc_python_out=./gen/python/mobile_bank/ proto/mobile_bank.proto
+
+  generatecards:
+    aliases:
+      - gen-cards
+    desc: "Generate Python code from cards proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/cards/ --grpc_python_out=./gen/python/cards/ proto/cards.proto
+
+  generatecardprices:
+    aliases:
+      - gen-prices
+      - gen-cprices
+    desc: "Generate Python code from card prices proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/card_prices/ --grpc_python_out=./gen/python/card_prices/ proto/card_prices.proto
+
+  generatetus-go:
+    aliases:
+      - gen-tus-go
+    desc: "Generate Go code from tus proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/tus/ --go-grpc_out=./gen/go/tus/ proto/tus.proto
+
+  generatemobilebank-go:
+    aliases:
+      - gen-mob-go
+      - gen-mbank-go
+    desc: "Generate Go code from mobile bank proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/mobile_bank/ --go-grpc_out=./gen/go/mobile_bank/ proto/mobile_bank.proto
+
+  generatecards-go:
+    aliases:
+      - gen-cards-go
+    desc: "Generate Go code from cards proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/cards/ --go-grpc_out=./gen/go/cards/ proto/cards.proto
+
+  generatecardprices-go:
+    aliases:
+      - gen-prices-go
+      - gen-cprices-go
+    desc: "Generate Go code from card prices proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/card_prices/ --go-grpc_out=./gen/go/card_prices/ proto/card_prices.proto
+
+  generate-all:
+    desc: "Generate all proto files for both Python and Go"
+    deps:
+      - generatetus
+      - generatemobilebank
+      - generatecards
+      - generatecardprices
+      - generatetus-go
+      - generatemobilebank-go
+      - generatecards-go
+      - generatecardprices-go
