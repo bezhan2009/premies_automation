@@ -21,3 +21,28 @@ count_workers_card_turnover_query = """
         WHERE owner_name = %(owner_name)s
           AND expire_date IS NOT NULL;
 """
+
+count_workers_cards_activations_prem = """
+        SELECT
+            COUNT(*) AS cards_actived,
+            (COUNT(*) * 0.8) AS cards_issued
+        FROM cards
+        WHERE owner_name = %(owner_name)s
+          AND debt_osd > 0
+          AND expire_date IS NOT NULL;
+"""
+
+count_turnovers_and_activation_cards_worker = """
+        SELECT
+            (SELECT
+                (COUNT(*) * 0.8) AS activated_cards
+            FROM cards
+            WHERE owner_name = %(owner_name)s
+              AND debt_osd > 0
+              AND expire_date IS NOT NULL
+            ),
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
+        FROM cards
+        WHERE owner_name = %(owner_name)s
+          AND expire_date IS NOT NULL;
+"""

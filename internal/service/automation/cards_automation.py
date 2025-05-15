@@ -9,7 +9,7 @@ from internal.repository.utils.utils import (
 )
 from internal.sql.cards_automation import (
     count_workers_prem_query,
-    count_workers_card_turnover_query
+    count_turnovers_and_activation_cards_worker
 )
 from pkg.db.connect import (get_connection, get_cursor)
 from pkg.logger.logger import setup_logger
@@ -62,13 +62,13 @@ class AutomationCard:
         logger.info(f"[{OP}] All workers updated.")
         return True
 
-    def set_workers_turnover(self) -> bool:
-        OP = self.OP + ".set_workers_turnover"
+    def set_workers_turnover_and_activation_prems(self) -> bool:
+        OP = self.OP + ".set_workers_turnover_and_activation_prems"
 
         for owner_id, owner_name in self.owners:
             try:
                 self.cursor.execute(
-                    sql.SQL(count_workers_card_turnover_query),
+                    sql.SQL(count_turnovers_and_activation_cards_worker),
                     {
                         "owner_name": hash_sha256(owner_name),
                     }
@@ -78,7 +78,7 @@ class AutomationCard:
                 if cards_turnover is None or cards_turnover[0] is None:
                     continue
 
-                if insert_card_turnovers(self.cursor, cards_turnover[0], owner_id) is False:
+                if insert_card_turnovers(self.cursor, cards_turnover[0], cards_turnover[1], owner_id) is False:
                     return False
             except Exception as e:
                 logger.error(f"[{OP}] Error for {owner_name}: {e}")

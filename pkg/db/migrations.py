@@ -51,7 +51,8 @@ def migrate():
             CREATE TABLE IF NOT EXISTS card_prices (
                 id SERIAL,
                 dcl_name TEXT,
-                coast float
+                coast float,
+                category TEXT
             );
             """
         )

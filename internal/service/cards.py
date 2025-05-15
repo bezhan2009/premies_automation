@@ -29,7 +29,7 @@ def upload_cards(file_path: str) -> Exception | str:
         logger.error("[{}] Error setting workers card prem please check xlsx file".format(OP))
         return Exception("Error setting workers card prem please check your xlsx file")
 
-    if automation.set_workers_turnover() is not True:
+    if automation.set_workers_turnover_and_activation_prems() is not True:
         logger.error("[{}] Error setting turnovers workers please check your xlsx file".format(OP))
         return Exception("Error setting turnovers workers please check your xlsx file")
 

@@ -27,8 +27,8 @@ def upload_card_prices(price_df: DataFrame) -> Exception | str:
                 continue
 
             cursor.execute(
-                sql.SQL("INSERT INTO card_prices(dcl_name, coast) VALUES (%s, %s)"),
-                [row['DCL_NAME'], row['Coast']]
+                sql.SQL("INSERT INTO card_prices(dcl_name, coast, category) VALUES (%s, %s, %s)"),
+                [row['DCL_NAME'], row['Coast'], row['Category']]
             )
         except Exception as e:
             logger.error("[{}] Error while setting the data to card prices table: {}".format(OP, str(e)))
@@ -69,3 +69,24 @@ def upload_card_prices_to_dict() -> Exception | dict:
         coast_dict[str(card_price[1]).strip()] = float(card_price[2])
 
     return coast_dict
+
+
+def clean_card_prices_table() -> Exception | str:
+    OP = "repository.clean_card_prices_table"
+
+    logger.info("[{}] Cleaning cards price table".format(OP))
+
+    conn = get_connection()
+    cursor = get_cursor()
+
+    try:
+        cursor.execute(
+            sql.SQL("DELETE FROM card_prices"),
+        )
+        conn.commit()
+    except Exception as e:
+        logger.error("[{}] Error while cleaning cards price table: {}".format(OP, str(e)))
+        return e
+
+    logger.info("[{}] Cards price table cleaned successfully".format(OP))
+    return "Successfully cleaned cards price table"

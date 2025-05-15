@@ -12,8 +12,8 @@ def insert_card_sales(cursor, cards_prem: float, salary_project: float, worker_i
     try:
         cursor.execute(
             """
-            INSERT INTO card_sales(created_at, updated_at, cards_prem, salary_project, worker_id) 
-            VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
+                INSERT INTO card_sales(created_at, updated_at, cards_prem, salary_project, worker_id) 
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
             """,
             (cards_prem, salary_project, worker_id)
         )
@@ -24,14 +24,14 @@ def insert_card_sales(cursor, cards_prem: float, salary_project: float, worker_i
     return True
 
 
-def insert_card_turnovers(cursor, turnovers_prem: float, worker_id: int) -> bool:
+def insert_card_turnovers(cursor, turnovers_prem: float, activations_prem: float, worker_id: int) -> bool:
     try:
         cursor.execute(
             """
-            INSERT INTO card_turnovers(created_at, updated_at, card_turnovers_prem, worker_id)
-            VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s)
+                INSERT INTO card_turnovers(created_at, updated_at, card_turnovers_prem, active_cards_perms, worker_id)
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
             """,
-            (turnovers_prem, worker_id)
+            (turnovers_prem, activations_prem, worker_id)
         )
     except Exception as e:
         logger.error("Error while inserting card turnovers: {}".format(e))
@@ -44,8 +44,8 @@ def insert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, worker_id: i
     try:
         cursor.execute(
             """
-            INSERT INTO mobile_bank_sales(created_at, updated_at, mobile_bank_prem, worker_id)
-            VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s)
+                INSERT INTO mobile_bank_sales(created_at, updated_at, mobile_bank_prem, worker_id)
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s)
             """,
             (mobile_bank_sales_prem, worker_id)
         )

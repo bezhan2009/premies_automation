@@ -6,6 +6,8 @@ coast_dict = {}
 
 
 def upload_card_prices(path_file: str):
+    clean_card_price_table()
+
     # Загружаем прайс-лист стоимости карт
     price_df = pd.read_excel(path_file, engine='openpyxl')
 
@@ -27,6 +29,10 @@ def upload_card_prices_to_dict():
     coast_dict = res_dict
 
     return "Successfully uploaded card prices to dictionary."
+
+
+def clean_card_price_table() -> Exception | str:
+    return card_prices.clean_card_prices_table()
 
 
 def get_coast_dict() -> dict:
