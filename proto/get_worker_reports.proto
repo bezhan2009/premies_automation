@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bezhan2009/premies_portal/gen/go/reports";
+
+service ReportsService {
+  rpc CreateZIPReports (google.protobuf.Empty) returns (CreateZIPReportsResponse);
+  //  rpc CreateExcelReport (CreateExcelReportRequest) returns (CreateExcelReportResponse);
+}
+
+message CreateZIPReportsResponse {
+  string zip_path = 1;
+}
+
+//message CreateExcelReportRequest {
+//  int64 owner_id = 1;
+//  string owner_name = 2;
+//}
+//
+//message CreateExcelReportResponse {
+//  string status = 1;
+//}
+//

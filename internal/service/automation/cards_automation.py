@@ -1,40 +1,27 @@
 from psycopg2 import sql
 
-from internal.lib.date import (get_current_month, get_current_year)
 from internal.lib.encypter import (hash_sha256)
 from internal.repository.utils.utils import (
-    get_users,
-    insert_card_sales,
-    insert_card_turnovers
+    upsert_card_sales,
+    upsert_card_turnovers
 )
+from internal.service.automation.base_automation import BaseAutomation
 from internal.sql.cards_automation import (
     count_workers_prem_query,
     count_turnovers_and_activation_cards_worker
 )
-from pkg.db.connect import (get_connection, get_cursor)
+from internal.sql.general import get_worker_id_by_owner_name
 from pkg.logger.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 
-class AutomationCard:
+class AutomationCard(BaseAutomation):
     def __init__(self):
-        self.OP = "service.automation.AutomationCard"
-        self.conn = get_connection()
-        self.cursor = get_cursor()
-        self.month = get_current_month()
-        self.year = get_current_year()
-        self.owners = self._fetch_owners()
-
-    def _fetch_owners(self):
-        try:
-            return get_users(self.cursor)
-        except Exception as e:
-            logger.error(f"[{self.OP}] Error while selecting users: {e}")
-            return []
+        super().__init__("service.automation.AutomationCard")
 
     def set_workers_cards_prem(self) -> bool:
-        OP = self.OP + ".set_workers_prem"
+        OP = self.OP + ".set_workers_cards_prem"
 
         for owner_id, owner_name in self.owners:
             try:
@@ -52,7 +39,16 @@ class AutomationCard:
                 if prems is None:
                     continue
 
-                if insert_card_sales(self.cursor, prems[2], 0, owner_id) is False:
+                self.cursor.execute(
+                    sql.SQL(get_worker_id_by_owner_name),
+                    {
+                        "owner_name": hash_sha256(owner_name),
+                    }
+                )
+
+                worker_id = self.cursor.fetchone()
+
+                if upsert_card_sales(self.cursor, prems[2], 0, worker_id[0]) is False:
                     return False
             except Exception as e:
                 logger.error("[{}] Error while setting card prems: {}".format(OP, str(e)))
@@ -78,7 +74,16 @@ class AutomationCard:
                 if cards_turnover is None or cards_turnover[0] is None:
                     continue
 
-                if insert_card_turnovers(self.cursor, cards_turnover[0], cards_turnover[1], owner_id) is False:
+                self.cursor.execute(
+                    sql.SQL(get_worker_id_by_owner_name),
+                    {
+                        "owner_name": hash_sha256(owner_name),
+                    }
+                )
+
+                worker_id = self.cursor.fetchone()
+
+                if upsert_card_turnovers(self.cursor, cards_turnover[0], cards_turnover[1], worker_id[0]) is False:
                     return False
             except Exception as e:
                 logger.error(f"[{OP}] Error for {owner_name}: {e}")

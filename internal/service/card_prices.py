@@ -24,7 +24,7 @@ def upload_card_prices_to_dict():
         try:
             res_dict = card_prices.upload_card_prices_to_dict()
         except Exception as e2:
-            return e2
+            raise e2
 
     coast_dict = res_dict
 

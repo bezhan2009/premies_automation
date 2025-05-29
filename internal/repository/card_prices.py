@@ -32,7 +32,7 @@ def upload_card_prices(price_df: DataFrame) -> Exception | str:
             )
         except Exception as e:
             logger.error("[{}] Error while setting the data to card prices table: {}".format(OP, str(e)))
-            return e
+            raise e
 
     conn.commit()
 
@@ -86,7 +86,7 @@ def clean_card_prices_table() -> Exception | str:
         conn.commit()
     except Exception as e:
         logger.error("[{}] Error while cleaning cards price table: {}".format(OP, str(e)))
-        return e
+        raise e
 
     logger.info("[{}] Cards price table cleaned successfully".format(OP))
     return "Successfully cleaned cards price table"

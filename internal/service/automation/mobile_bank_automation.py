@@ -1,28 +1,18 @@
 from psycopg2 import sql
 
 from internal.lib.encypter import hash_sha256
-from internal.repository.utils.utils import get_users
-from internal.repository.utils.utils import insert_mobile_bank_sales
+from internal.repository.utils.utils import upsert_mobile_bank_sales
+from internal.service.automation.base_automation import BaseAutomation
+from internal.sql.general import get_worker_id_by_owner_name
 from internal.sql.mobile_bank import count_mobile_bank_perms
-from pkg.db.connect import (get_connection, get_cursor)
 from pkg.logger.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 
-class AutomationMobileBank:
+class AutomationMobileBank(BaseAutomation):
     def __init__(self):
-        self.OP = "service.automation.AutomationMobileBank"
-        self.conn = get_connection()
-        self.cursor = get_cursor()
-        self.owners = self._fetch_owners()
-
-    def _fetch_owners(self):
-        try:
-            return get_users(self.cursor)
-        except Exception as e:
-            logger.error(f"[{self.OP}] Error while selecting users: {e}")
-            return []
+        super().__init__("service.automation.AutomationMobileBank", use_month=False, use_year=False)
 
     def set_mobile_bank_sales(self):
         OP = self.OP + ".set_mobile_bank_sales"
@@ -43,7 +33,16 @@ class AutomationMobileBank:
                 if mobile_bank_sales is None:
                     continue
 
-                insert_mobile_bank_sales(self.cursor, mobile_bank_sales[0], owner[0])
+                self.cursor.execute(
+                    sql.SQL(get_worker_id_by_owner_name),
+                    {
+                        "owner_name": hash_sha256(owner[1]),
+                    }
+                )
+
+                worker_id = self.cursor.fetchone()
+
+                upsert_mobile_bank_sales(self.cursor, mobile_bank_sales[0], worker_id[0])
             except Exception as e:
                 logger.error("[{}] Error while setting mobile bank sales: {}".format(OP, e))
                 return False

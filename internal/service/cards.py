@@ -15,23 +15,23 @@ def upload_cards(file_path: str) -> Exception | str:
         df = pd.read_excel(file_path, engine='openpyxl')
     except FileNotFoundError as e:
         logger.error("[{}] File not found {}".format(OP, file_path))
-        return e
+        raise e
 
     clean_cards_table()
 
     resp = cards.upload_cards(df, get_coast_dict())
     if resp.count("Successfully") == 0:
-        return Exception("Something went wrong")
+        raise Exception("Something went wrong")
 
     automation = AutomationCard()
 
     if automation.set_workers_cards_prem() is not True:
         logger.error("[{}] Error setting workers card prem please check xlsx file".format(OP))
-        return Exception("Error setting workers card prem please check your xlsx file")
+        raise Exception("Error setting workers card prem please check your xlsx file")
 
     if automation.set_workers_turnover_and_activation_prems() is not True:
         logger.error("[{}] Error setting turnovers workers please check your xlsx file".format(OP))
-        return Exception("Error setting turnovers workers please check your xlsx file")
+        raise Exception("Error setting turnovers workers please check your xlsx file")
 
     logger.info("[{}] Cards uploaded".format(OP))
 

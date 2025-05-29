@@ -4,8 +4,15 @@ database:
   user: postgres
   password: bezhan2009
   name: premies_portal_db
-
 grpc:
   host: 0.0.0.0
   port: 50051
   max_workers: 10
+automation_details:
+  def_excel_paths:
+    def_card_prices: prices.xlsx
+    def_report_template_cards: uploads/rep_template_cards.xlsx
+    def_report_template_credits: uploads/rep_template_credits.xlsx
+  def_out_paths:
+    output_dir_reports: excel_employee
+    zip_file_path: employee_excels.zip

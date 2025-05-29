@@ -67,7 +67,7 @@ def clean_cards_table() -> Exception | str:
         conn.commit()
     except Exception as e:
         logger.error("[{}] Error while cleaning cards table: {}".format(OP, str(e)))
-        return e
+        raise e
 
     logger.info("[{}] Cards table cleaned successfully".format(OP))
     return "Successfully cleaned cards table"

@@ -14,12 +14,12 @@ def mobile_bank_excel_upload(path_file: str) -> Exception | str:
 
     resp = mobile_bank.mobile_bank_excel_upload(df)
     if resp.count("Successfully") == 0:
-        return Exception("Something went wrong. Please check xlsx file")
+        raise Exception("Something went wrong. Please check xlsx file")
 
     automation = AutomationMobileBank()
 
     if automation.set_mobile_bank_sales() is False:
-        return Exception("Something went wrong. Please check xlsx file")
+        raise Exception("Something went wrong. Please check xlsx file")
 
     return resp
 

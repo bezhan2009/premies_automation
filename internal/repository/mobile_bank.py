@@ -40,8 +40,8 @@ def mobile_bank_clean_table() -> Exception | str:
         conn.commit()
     except Exception as e:
         logger.error("[{}] Error while cleaning mobile bank table: {}".format(OP, str(e)))
-        return e
+        raise e
 
     logger.info("[{}] Successfully cleaned mobile bank table".format(OP))
 
-    return "Cleaned tus table successfully"
+    return "Cleaned mobile bank table successfully"
