@@ -2,7 +2,8 @@ count_workers_prem_query = """
         SELECT
             EXTRACT(MONTH FROM issue_date) AS month,
             COUNT(*) AS cards_issued,
-            SUM(coast) AS prem
+            SUM(coast) AS prem,
+            SUM(debt_osd) AS debt_osd
         FROM cards
         WHERE owner_name = %(owner_name)s
           AND EXTRACT(YEAR FROM issue_date) = %(year)s
@@ -33,7 +34,7 @@ count_workers_cards_activations_prem = """
 count_turnovers_and_activation_cards_worker = """
         SELECT
             (SELECT
-                (COUNT(*) * 0.8) AS activated_cards
+                (COUNT(*) * 0.8) AS activated_cards_prem
             FROM cards
             WHERE owner_name = %(owner_name)s
               AND expire_date IS NOT NULL
@@ -42,4 +43,19 @@ count_turnovers_and_activation_cards_worker = """
         FROM cards
         WHERE owner_name = %(owner_name)s
           AND expire_date IS NOT NULL;
+"""
+
+get_cards_detail = """
+        SELECT expire_date,
+               issue_date,
+               card_type,
+               code,
+               in_balance,
+               debt_osd,
+               debt_osk,
+               out_balance,
+               owner_name,
+               coast
+        FROM cards
+        WHERE owner_name = %(owner_name)s;
 """

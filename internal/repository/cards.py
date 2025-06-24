@@ -26,6 +26,7 @@ def upload_cards(df: DataFrame, coast_dict: dict) -> Exception | str:
                 parse_date(row['DVID']),  # expire_date
                 parse_date(row['REQDT']),  # issue_date
                 hash_sha256(card_type),  # card_type
+                hash_sha256(str(row['CODE'])),  # code
                 parse_float(row['IN_BAL_N']),  # in_balance
                 parse_float(row['CMOVD_OSD_N']),  # debt_osd
                 parse_float(row['CMOVD_OSK_N']),  # debt_osk
@@ -37,10 +38,10 @@ def upload_cards(df: DataFrame, coast_dict: dict) -> Exception | str:
             cursor.execute(
                 sql.SQL("""
                 INSERT INTO cards (
-                    expire_date, issue_date, card_type,
+                    expire_date, issue_date, card_type, code,
                     in_balance, debt_osd, debt_osk, out_balance,
                     owner_name, coast
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """), values)
 
         except Exception as e:

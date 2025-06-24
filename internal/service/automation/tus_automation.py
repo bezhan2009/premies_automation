@@ -35,7 +35,7 @@ class AutomationTusMarks(BaseAutomation):
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
-                        "owner_name": hash_sha256(owner[1]),
+                        "owner_name": owner[1],
                     }
                 )
 

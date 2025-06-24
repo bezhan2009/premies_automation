@@ -1,15 +1,18 @@
 from psycopg2 import sql
-
+from decimal import Decimal
 from internal.lib.encypter import (hash_sha256)
 from internal.repository.utils.utils import (
     upsert_card_sales,
-    upsert_card_turnovers
+    upsert_card_turnovers,
+    upsert_card_details
 )
 from internal.service.automation.base_automation import BaseAutomation
 from internal.sql.cards_automation import (
     count_workers_prem_query,
-    count_turnovers_and_activation_cards_worker
+    count_turnovers_and_activation_cards_worker,
+    get_cards_detail
 )
+from internal.app.models.card import Card
 from internal.sql.general import get_worker_id_by_owner_name
 from pkg.logger.logger import setup_logger
 
@@ -19,6 +22,45 @@ logger = setup_logger(__name__)
 class AutomationCard(BaseAutomation):
     def __init__(self):
         super().__init__("service.automation.AutomationCard")
+
+    def _set_cards_details(self, owner_name: str, owner_id: int) -> bool:
+        OP = self.OP + "._set_cards_details"
+
+        self.cursor.execute(
+            sql.SQL(get_cards_detail),
+            {
+                "owner_name": hash_sha256(owner_name),
+            }
+        )
+
+        data_cards = self.cursor.fetchall()
+
+        card_details = []
+
+        for data_card in data_cards:
+            card_detail = Card(
+                expire_date=data_card[0],
+                issue_date=data_card[1],
+                card_type=data_card[2],
+                code=data_card[3],
+                in_balance=data_card[4],
+                debt_osd=data_card[5],
+                debt_osk=data_card[6],
+                out_balance=data_card[7],
+                owner_name=data_card[8],
+                coast=data_card[9],
+            )
+
+            card_details.append(card_detail)
+
+        for card_detail in card_details:
+            try:
+                upsert_card_details(self.cursor, card_detail, owner_id)
+            except Exception as e:
+                logger.error("{} Failed to insert card details: {}".format(OP, e))
+                return False
+
+        return True
 
     def set_workers_cards_prem(self) -> bool:
         OP = self.OP + ".set_workers_cards_prem"
@@ -42,20 +84,24 @@ class AutomationCard(BaseAutomation):
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
-                        "owner_name": hash_sha256(owner_name),
+                        "owner_name": owner_name,
                     }
                 )
 
                 worker_id = self.cursor.fetchone()
 
-                if upsert_card_sales(self.cursor, prems[2], 0, worker_id[0]) is False:
+                if not worker_id:
+                    logger.error("[{}] Error while setting card prems: worker not found".format(OP))
+                    return False
+
+                if upsert_card_sales(self.cursor, prems[1], prems[2], prems[3], worker_id[0]) is False:
                     return False
             except Exception as e:
                 logger.error("[{}] Error while setting card prems: {}".format(OP, str(e)))
                 return False
 
         self.conn.commit()
-        logger.info(f"[{OP}] All workers updated.")
+        logger.info(f"[{OP}] All workers updated card sales prems.")
         return True
 
     def set_workers_turnover_and_activation_prems(self) -> bool:
@@ -77,13 +123,17 @@ class AutomationCard(BaseAutomation):
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
-                        "owner_name": hash_sha256(owner_name),
+                        "owner_name": owner_name,
                     }
                 )
 
                 worker_id = self.cursor.fetchone()
 
-                if upsert_card_turnovers(self.cursor, cards_turnover[0], cards_turnover[1], worker_id[0]) is False:
+                if upsert_card_turnovers(self.cursor, cards_turnover[0] / Decimal('0.8'), cards_turnover[0],
+                                         cards_turnover[1], worker_id[0]) is False:
+                    return False
+
+                if self._set_cards_details(owner_name, worker_id) is False:
                     return False
             except Exception as e:
                 logger.error(f"[{OP}] Error for {owner_name}: {e}")

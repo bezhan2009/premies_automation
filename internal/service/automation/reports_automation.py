@@ -215,7 +215,6 @@ class ReportsAutomation(BaseAutomation):
 
         if role_id == 6:
             data_mapping = {
-
                 "A7": employee.place_work,
 
                 "C9": get_current_date(),

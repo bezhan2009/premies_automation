@@ -5,7 +5,7 @@ from internal.lib.date import (
     get_current_month
 )
 from pkg.logger.logger import setup_logger
-
+from internal.app.models.card import Card
 logger = setup_logger(__name__)
 
 
@@ -25,7 +25,7 @@ def get_month_date_range():
     return start_date, end_date
 
 
-def upsert_card_sales(cursor, cards_prem: float, salary_project: float, worker_id: int) -> Exception | bool:
+def upsert_card_sales(cursor, cards_sailed: int, cards_prem: float, debt_osd: float, worker_id: int) -> Exception | bool:
     try:
         start_date, end_date = get_month_date_range()
 
@@ -43,20 +43,21 @@ def upsert_card_sales(cursor, cards_prem: float, salary_project: float, worker_i
             cursor.execute(
                 """
                 UPDATE card_sales
-                SET cards_prem = %s,
-                    salary_project = %s,
+                SET cards_sailed = %s,
+                    cards_prem = %s,
+                    deb_osd = %s,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 """,
-                (cards_prem, salary_project, record[0])
+                (cards_sailed, cards_prem, debt_osd, record[0])
             )
         else:
             cursor.execute(
                 """
-                INSERT INTO card_sales(created_at, updated_at, cards_prem, salary_project, worker_id)
-                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
+                INSERT INTO card_sales(created_at, updated_at, cards_sailed, cards_prem, deb_osd, worker_id)
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s, %s)
                 """,
-                (cards_prem, salary_project, worker_id)
+                (cards_sailed, cards_prem, debt_osd, worker_id)
             )
 
     except Exception as e:
@@ -66,7 +67,100 @@ def upsert_card_sales(cursor, cards_prem: float, salary_project: float, worker_i
     return True
 
 
-def upsert_card_turnovers(cursor, turnovers_prem: float, activations_prem: float, worker_id: int) -> bool:
+def upsert_card_details(cursor, card_details: Card, worker_id: int):
+    try:
+        start_date, end_date = get_month_date_range()
+
+        # Используем только ключевые поля, по которым можно определить уникальность
+        cursor.execute(
+            """
+                SELECT id FROM card_details
+                WHERE worker_id = %s
+                  AND created_at >= %s AND created_at < %s
+                  AND issue_date = %s
+                  AND card_type = %s
+                  AND code = %s
+            """,
+            (
+                worker_id,
+                start_date,
+                end_date,
+                card_details.issue_date,
+                card_details.card_type,
+                card_details.code,
+            )
+        )
+
+        record = cursor.fetchone()
+
+        if record:
+            cursor.execute(
+                """
+                UPDATE card_details
+                SET expire_date = %s,
+                    in_balance = %s,
+                    debt_osd = %s,
+                    debt_osk = %s,
+                    out_balance = %s,
+                    coast = %s,
+                    card_type = %s,
+                    code = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = %s
+                """,
+                (
+                    card_details.expire_date,
+                    card_details.in_balance,
+                    card_details.debt_osd,
+                    card_details.debt_osk,
+                    card_details.out_balance,
+                    card_details.coast,
+                    card_details.card_type,
+                    card_details.code,
+                    record[0]
+                )
+            )
+        else:
+            cursor.execute(
+                """
+                INSERT INTO card_details(
+                    expire_date,
+                    issue_date,
+                    card_type,
+                    code,
+                    in_balance,
+                    debt_osd,
+                    debt_osk,
+                    out_balance,
+                    coast,
+                    created_at,
+                    updated_at,
+                    worker_id
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s)
+                """,
+                (
+                    card_details.expire_date,
+                    card_details.issue_date,
+                    card_details.card_type,
+                    card_details.code,
+                    card_details.in_balance,
+                    card_details.debt_osd,
+                    card_details.debt_osk,
+                    card_details.out_balance,
+                    card_details.coast,
+                    worker_id
+                )
+            )
+
+    except Exception as e:
+        logger.error("Error in upsert_card_details: {}".format(e))
+        raise e
+
+    return True
+
+
+def upsert_card_turnovers(cursor, activated_cards: int, turnovers_prem: float, activations_prem: float, worker_id: int) -> bool:
     try:
         start_date, end_date = get_month_date_range()
 
@@ -85,19 +179,20 @@ def upsert_card_turnovers(cursor, turnovers_prem: float, activations_prem: float
                 """
                 UPDATE card_turnovers
                 SET card_turnovers_prem = %s,
+                    activated_cards = %s,
                     active_cards_perms = %s,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 """,
-                (turnovers_prem, activations_prem, record[0])
+                (turnovers_prem, activated_cards, activations_prem, record[0])
             )
         else:
             cursor.execute(
                 """
-                INSERT INTO card_turnovers(created_at, updated_at, card_turnovers_prem, active_cards_perms, worker_id)
-                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
+                INSERT INTO card_turnovers(created_at, updated_at, card_turnovers_prem, activated_cards, active_cards_perms, worker_id)
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s, %s)
                 """,
-                (turnovers_prem, activations_prem, worker_id)
+                (turnovers_prem, activated_cards, activations_prem, worker_id)
             )
 
     except Exception as e:
@@ -147,7 +242,7 @@ def upsert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, worker_id: i
     return True
 
 
-def upsert_tus_marks(cursor, processuses: float, worker_id: int) -> bool:
+def upsert_tus_marks(cursor, processes: float, worker_id: int) -> bool:
     try:
         start_date, end_date = get_month_date_range()
 
@@ -169,7 +264,7 @@ def upsert_tus_marks(cursor, processuses: float, worker_id: int) -> bool:
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 """,
-                (processuses, record[0])
+                (processes, record[0])
             )
         else:
             cursor.execute(
@@ -177,7 +272,7 @@ def upsert_tus_marks(cursor, processuses: float, worker_id: int) -> bool:
                 INSERT INTO service_qualities(created_at, updated_at, call_center, worker_id)
                 VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s)
                 """,
-                (processuses, worker_id)
+                (processes, worker_id)
             )
 
     except Exception as e:

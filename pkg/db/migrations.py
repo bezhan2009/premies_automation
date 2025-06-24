@@ -13,6 +13,7 @@ def migrate():
                 expire_date     DATE,
                 issue_date      DATE,
                 card_type       TEXT,
+                code            TEXT,
                 in_balance      NUMERIC,
                 debt_osd        NUMERIC,
                 debt_osk        NUMERIC,
