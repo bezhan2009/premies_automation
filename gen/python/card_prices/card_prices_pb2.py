@@ -24,14 +24,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x63\x61rd_prices.proto\",\n\x17\x43\x61rdPricesUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"*\n\x18\x43\x61rdPricesUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2`\n\x11\x43\x61rdPricesService\x12K\n\x14UploadCardPricesData\x12\x18.CardPricesUploadRequest\x1a\x19.CardPricesUploadResponseB9Z7github.com/bezhan2009/premies_portal/gen/go/card_pricesb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x63\x61rd_prices.proto\",\n\x17\x43\x61rdPricesUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"*\n\x18\x43\x61rdPricesUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2`\n\x11\x43\x61rdPricesService\x12K\n\x14UploadCardPricesData\x12\x18.CardPricesUploadRequest\x1a\x19.CardPricesUploadResponseB\x14Z\x12gen/go/card_pricesb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'card_prices_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z7github.com/bezhan2009/premies_portal/gen/go/card_prices'
+  _globals['DESCRIPTOR']._serialized_options = b'Z\022gen/go/card_prices'
   _globals['_CARDPRICESUPLOADREQUEST']._serialized_start=21
   _globals['_CARDPRICESUPLOADREQUEST']._serialized_end=65
   _globals['_CARDPRICESUPLOADRESPONSE']._serialized_start=67

@@ -3,7 +3,10 @@ count_workers_prem_query = """
             EXTRACT(MONTH FROM issue_date) AS month,
             COUNT(*) AS cards_issued,
             SUM(coast) AS prem,
-            SUM(debt_osd) AS debt_osd
+            SUM(debt_osd) AS debt_osd,
+            SUM(debt_osk) AS debt_osk,
+            SUM(in_balance) AS in_balance,
+            SUM(out_balance) AS out_balance
         FROM cards
         WHERE owner_name = %(owner_name)s
           AND EXTRACT(YEAR FROM issue_date) = %(year)s
@@ -12,6 +15,13 @@ count_workers_prem_query = """
           AND expire_date IS NOT NULL
         GROUP BY month
         ORDER BY month;
+"""
+
+count_workers_cards_sailed_in_general = """
+    SELECT
+            COUNT(*) AS cards_issued
+        FROM cards
+        WHERE owner_name = %(owner_name)s
 """
 
 count_workers_card_turnover_query = """
@@ -40,6 +50,20 @@ count_turnovers_and_activation_cards_worker = """
               AND expire_date IS NOT NULL
             ),
             SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
+        FROM cards
+        WHERE owner_name = %(owner_name)s
+          AND expire_date IS NOT NULL;
+"""
+
+count_turnovers_and_activation_cards_worker_credit = """
+        SELECT
+            (SELECT
+                (COUNT(*) * 0.8) AS activated_cards_prem
+            FROM cards
+            WHERE owner_name = %(owner_name)s
+              AND expire_date IS NOT NULL
+            ),
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.0001 AS turnover
         FROM cards
         WHERE owner_name = %(owner_name)s
           AND expire_date IS NOT NULL;

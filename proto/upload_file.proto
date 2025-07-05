@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "gen/go/upload_file";
+
+service UploadFileService {
+  rpc UploadFile (UploadFileRequest) returns (UploadFileResponse);
+  rpc DownloadFile (DownloadFileRequest) returns (DownloadFileResponse);
+}
+
+message UploadFileRequest {
+  string filename = 1;
+  bytes file_content = 2;
+}
+
+message UploadFileResponse {
+  string path = 1;
+}
+
+message DownloadFileRequest {
+  string path = 1;
+}
+
+message DownloadFileResponse {
+  bytes file_content = 1;
+}

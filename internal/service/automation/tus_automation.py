@@ -32,6 +32,8 @@ class AutomationTusMarks(BaseAutomation):
                 if average_score is None:
                     continue
 
+                print(average_score)
+
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
@@ -40,6 +42,7 @@ class AutomationTusMarks(BaseAutomation):
                 )
 
                 worker_id = self.cursor.fetchone()
+                print(worker_id)
 
                 upsert_tus_marks(self.cursor, average_score[0], worker_id[0])
             except Exception as e:

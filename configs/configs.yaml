@@ -8,11 +8,17 @@ grpc:
   host: 0.0.0.0
   port: 50051
   max_workers: 10
+service:
+  mobile_bank_prem: 5
 automation_details:
   def_excel_paths:
     def_card_prices: prices.xlsx
     def_report_template_cards: uploads/rep_template_cards.xlsx
     def_report_template_credits: uploads/rep_template_credits.xlsx
+    def_report_template_accountant: uploads/rep_accountant.xlsx
   def_out_paths:
-    output_dir_reports: excel_employee
+    accountant_dir_reports: uploads/excel_accountant
+    output_dir_reports: uploads/excel_reports
     zip_file_path: employee_excels.zip
+    zip_reports_file_path: uploads/output_excels_zip
+    uploaded_files_path: uploads/uploaded

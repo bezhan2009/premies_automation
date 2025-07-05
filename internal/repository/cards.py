@@ -25,8 +25,8 @@ def upload_cards(df: DataFrame, coast_dict: dict) -> Exception | str:
             values = (
                 parse_date(row['DVID']),  # expire_date
                 parse_date(row['REQDT']),  # issue_date
-                hash_sha256(card_type),  # card_type
-                hash_sha256(str(row['CODE'])),  # code
+                card_type,  # card_type
+                str(row['CODE']),  # code
                 parse_float(row['IN_BAL_N']),  # in_balance
                 parse_float(row['CMOVD_OSD_N']),  # debt_osd
                 parse_float(row['CMOVD_OSK_N']),  # debt_osk

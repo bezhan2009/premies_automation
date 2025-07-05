@@ -1,11 +1,9 @@
-from datetime import datetime, timezone
-
+from internal.app.models.card import Card
 from internal.lib.date import (
-    get_current_year,
-    get_current_month
+    get_month_date_range
 )
 from pkg.logger.logger import setup_logger
-from internal.app.models.card import Card
+
 logger = setup_logger(__name__)
 
 
@@ -14,18 +12,7 @@ def get_workers(cursor):
     return cursor.fetchall()
 
 
-def get_month_date_range():
-    year, month = get_current_year(), get_current_month()
-    start_date = datetime(year, month, 1, tzinfo=timezone.utc)
-    if month == 12:
-        end_date = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
-    else:
-        end_date = datetime(year, month + 1, 1, tzinfo=timezone.utc)
-
-    return start_date, end_date
-
-
-def upsert_card_sales(cursor, cards_sailed: int, cards_prem: float, debt_osd: float, worker_id: int) -> Exception | bool:
+def upsert_card_sales(cursor, cards_sailed: int, cards_prem: float, card: Card, worker_id: int) -> Exception | bool:
     try:
         start_date, end_date = get_month_date_range()
 
@@ -46,18 +33,62 @@ def upsert_card_sales(cursor, cards_sailed: int, cards_prem: float, debt_osd: fl
                 SET cards_sailed = %s,
                     cards_prem = %s,
                     deb_osd = %s,
+                    deb_osk = %s,
+                    in_balance = %s,
+                    out_balance = %s,
+                    cards_sailed_in_general = %s,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 """,
-                (cards_sailed, cards_prem, debt_osd, record[0])
+                (
+                    cards_sailed,
+                    cards_prem,
+                    card.debt_osd,
+                    card.debt_osk,
+                    card.in_balance,
+                    card.out_balance,
+                    card.cards_sailed_in_general,
+                    record[0]
+                )
             )
         else:
             cursor.execute(
                 """
-                INSERT INTO card_sales(created_at, updated_at, cards_sailed, cards_prem, deb_osd, worker_id)
-                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s, %s)
+                INSERT INTO card_sales(
+                    created_at, 
+                    updated_at, 
+                    cards_sailed, 
+                    cards_prem, 
+                    deb_osd, 
+                    deb_osk, 
+                    in_balance, 
+                    out_balance,
+                    cards_sailed_in_general,
+                    worker_id
+                )
+                VALUES (
+                    CURRENT_TIMESTAMP, 
+                    CURRENT_TIMESTAMP, 
+                    %s, 
+                    %s, 
+                    %s, 
+                    %s, 
+                    %s, 
+                    %s, 
+                    %s, 
+                    %s
+                )
                 """,
-                (cards_sailed, cards_prem, debt_osd, worker_id)
+                (
+                    cards_sailed,
+                    cards_prem,
+                    card.debt_osd,
+                    card.debt_osk,
+                    card.in_balance,
+                    card.out_balance,
+                    card.cards_sailed_in_general,
+                    worker_id
+                )
             )
 
     except Exception as e:
@@ -152,7 +183,6 @@ def upsert_card_details(cursor, card_details: Card, worker_id: int):
                     worker_id
                 )
             )
-
     except Exception as e:
         logger.error("Error in upsert_card_details: {}".format(e))
         raise e
@@ -202,7 +232,7 @@ def upsert_card_turnovers(cursor, activated_cards: int, turnovers_prem: float, a
     return True
 
 
-def upsert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, worker_id: int) -> bool:
+def upsert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, mobile_bank_connects: int, worker_id: int) -> bool:
     try:
         start_date, end_date = get_month_date_range()
 
@@ -221,18 +251,19 @@ def upsert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, worker_id: i
                 """
                 UPDATE mobile_bank_sales
                 SET mobile_bank_prem = %s,
+                    mobile_bank_connects = %s,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
                 """,
-                (mobile_bank_sales_prem, record[0])
+                (mobile_bank_sales_prem, mobile_bank_connects, record[0])
             )
         else:
             cursor.execute(
                 """
-                INSERT INTO mobile_bank_sales(created_at, updated_at, mobile_bank_prem, worker_id)
-                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s)
+                INSERT INTO mobile_bank_sales(created_at, updated_at, mobile_bank_prem, mobile_bank_connects, worker_id)
+                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
                 """,
-                (mobile_bank_sales_prem, worker_id)
+                (mobile_bank_sales_prem, mobile_bank_connects, worker_id)
             )
 
     except Exception as e:
@@ -245,6 +276,8 @@ def upsert_mobile_bank_sales(cursor, mobile_bank_sales_prem: float, worker_id: i
 def upsert_tus_marks(cursor, processes: float, worker_id: int) -> bool:
     try:
         start_date, end_date = get_month_date_range()
+
+        print(processes)
 
         cursor.execute(
             """
@@ -274,7 +307,6 @@ def upsert_tus_marks(cursor, processes: float, worker_id: int) -> bool:
                 """,
                 (processes, worker_id)
             )
-
     except Exception as e:
         logger.error("Error in upsert_tus_marks: {}".format(e))
         return False

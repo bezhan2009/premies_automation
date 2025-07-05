@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/bezhan2009/premies_portal/gen/go/mobile_bank";
+option go_package = "gen/go/mobile_bank";
 
 service MobileBankService {
   rpc UploadMobileBankData (MobileBankUploadRequest) returns (MobileBankUploadResponse);

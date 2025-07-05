@@ -5,6 +5,7 @@ import yaml
 from internal.app.models.configs import (
     DatabaseConfig,
     GrpcConfig,
+    ServiceConfig,
     DefExcelPaths,
     DefOutPaths,
     AutomationDetails,
@@ -28,6 +29,7 @@ def load_config(path: str):
         config = Config(
             database=DatabaseConfig(**raw['database']),
             grpc=GrpcConfig(**raw['grpc']),
+            service=ServiceConfig(**raw['service']),
             automation_details=automation_details
         )
 

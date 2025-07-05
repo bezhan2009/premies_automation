@@ -25,14 +25,14 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18get_worker_reports.proto\x1a\x1bgoogle/protobuf/empty.proto\",\n\x18\x43reateZIPReportsResponse\x12\x10\n\x08zip_path\x18\x01 \x01(\t2W\n\x0eReportsService\x12\x45\n\x10\x43reateZIPReports\x12\x16.google.protobuf.Empty\x1a\x19.CreateZIPReportsResponseB5Z3github.com/bezhan2009/premies_portal/gen/go/reportsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18get_worker_reports.proto\x1a\x1bgoogle/protobuf/empty.proto\",\n\x18\x43reateZIPReportsResponse\x12\x10\n\x08zip_path\x18\x01 \x01(\t2W\n\x0eReportsService\x12\x45\n\x10\x43reateZIPReports\x12\x16.google.protobuf.Empty\x1a\x19.CreateZIPReportsResponseB\x10Z\x0egen/go/reportsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'get_worker_reports_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z3github.com/bezhan2009/premies_portal/gen/go/reports'
+  _globals['DESCRIPTOR']._serialized_options = b'Z\016gen/go/reports'
   _globals['_CREATEZIPREPORTSRESPONSE']._serialized_start=57
   _globals['_CREATEZIPREPORTSRESPONSE']._serialized_end=101
   _globals['_REPORTSSERVICE']._serialized_start=103

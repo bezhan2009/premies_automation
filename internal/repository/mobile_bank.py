@@ -17,7 +17,7 @@ def mobile_bank_excel_upload(df: DataFrame) -> Exception | str:
         try:
             cursor.execute(
                 sql.SQL("INSERT INTO mobile_bank (surname, inn) VALUES (%s, %s)"),
-                [hash_sha256(row['surname']), hash_sha256(row['inn'])]
+                [hash_sha256(row['surname']), row['inn']]
             )
         except Exception as e:
             logger.error("[{}] Error while setting the data to mobile bank table: {}".format(OP, str(e)))

@@ -65,11 +65,10 @@ class ReportsAutomation(BaseAutomation):
             type_worker=self._get_position_from_role_id(worker_data[0]),
             mobile_bank_sales=mobile_bank[0],
             overdraft_sales=overdraft[0],
-            visa_mc_sales=cards_category_issued["MC"] + cards_category_issued["VISA"],
+            visa_mc_sales=cards_category_issued["MC"] + cards_category_issued["VISA"] + cards_category_issued["MC Nonresident"] + cards_category_issued["VISA Nonresident"],
             korty_milly=cards_category_issued["Корти милли"],
             visa_mc_vip_sales=(
-                    cards_category_issued["VISA Signature"] + cards_category_issued["VISA Nonresident"]
-                    + cards_category_issued["MC Nonresident"]
+                    cards_category_issued["VISA Signature"]
             ),
             visa_mc_business_sales=cards_category_issued["MC Business"] + cards_category_issued["Visa Business"],
             debt_osd_count=turnover_data[0],
@@ -200,6 +199,7 @@ class ReportsAutomation(BaseAutomation):
         for cell_ref, value in data_mapping.items():
             writable_ref = get_writable_cell_ref(ws, cell_ref)
             ws[writable_ref].value = value
+
 
         # Save the new file
         timestamp = int(time.time())  # UNIX-время в секундах

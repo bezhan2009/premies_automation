@@ -7,9 +7,6 @@ count_user_cards_category_issued = """
         WHERE c.owner_name = %(owner_name)s
           AND EXTRACT(YEAR FROM c.issue_date) = %(year)s
           AND EXTRACT(MONTH FROM c.issue_date) = %(month)s
-          AND EXTRACT(MONTH FROM c.expire_date) = %(month)s
-          AND c.debt_osd > 0
-          AND c.expire_date IS NOT NULL
         GROUP BY cp.category
         ORDER BY cards_count DESC;
 """
@@ -18,7 +15,8 @@ count_user_cards_turnover_out_balance_debt_osd = """
         SELECT
             SUM(debt_osd) AS debt_osd,
             SUM(out_balance) AS out_balance,
-            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover,
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.0001 AS turnover
         FROM cards
         WHERE owner_name = %(owner_name)s
           AND expire_date IS NOT NULL;
@@ -36,7 +34,7 @@ count_service_qualities_balls = """
 """
 
 count_mobile_bank_perms = """
-        SELECT mobile_bank_prem
+        SELECT mobile_bank_connects
         FROM mobile_bank_sales
         WHERE worker_id = %(owner_id)s
           AND EXTRACT(YEAR FROM created_at) = %(year)s
@@ -65,6 +63,13 @@ get_worker_place_data = """
 """
 
 count_activated_card_perms = """
+        SELECT activated_cards
+        FROM card_turnovers
+        WHERE worker_id = %(owner_id)s;
+"""
+
+
+count_activated_card_sales = """
         SELECT active_cards_perms
         FROM card_turnovers
         WHERE worker_id = %(owner_id)s;

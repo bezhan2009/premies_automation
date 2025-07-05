@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def get_current_month():
@@ -32,3 +32,14 @@ def get_current_date():
     year = today.year
 
     return f"{month_name} {year}"
+
+
+def get_month_date_range():
+    year, month = get_current_year(), get_current_month()
+    start_date = datetime(year, month, 1, tzinfo=timezone.utc)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end_date = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+
+    return start_date, end_date

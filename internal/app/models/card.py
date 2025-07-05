@@ -12,5 +12,6 @@ class Card:
     debt_osd: float
     debt_osk: float
     out_balance: float
+    cards_sailed_in_general: int
     owner_name: str
     coast: float

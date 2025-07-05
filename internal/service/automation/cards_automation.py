@@ -1,3 +1,5 @@
+from datetime import date
+
 from psycopg2 import sql
 from decimal import Decimal
 from internal.lib.encypter import (hash_sha256)
@@ -10,6 +12,7 @@ from internal.service.automation.base_automation import BaseAutomation
 from internal.sql.cards_automation import (
     count_workers_prem_query,
     count_turnovers_and_activation_cards_worker,
+    count_workers_cards_sailed_in_general,
     get_cards_detail
 )
 from internal.app.models.card import Card
@@ -49,10 +52,10 @@ class AutomationCard(BaseAutomation):
                 out_balance=data_card[7],
                 owner_name=data_card[8],
                 coast=data_card[9],
+                cards_sailed_in_general=int()
             )
 
             card_details.append(card_detail)
-
         for card_detail in card_details:
             try:
                 upsert_card_details(self.cursor, card_detail, owner_id)
@@ -72,6 +75,7 @@ class AutomationCard(BaseAutomation):
                     "year": self.year,
                     "month": self.month,
                 }
+
                 self.cursor.execute(
                     sql.SQL(count_workers_prem_query),
                     values
@@ -80,6 +84,13 @@ class AutomationCard(BaseAutomation):
 
                 if prems is None:
                     continue
+
+                self.cursor.execute(
+                    sql.SQL(count_workers_cards_sailed_in_general),
+                    values
+                )
+
+                cards_sailed_in_general = self.cursor.fetchone()
 
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
@@ -94,7 +105,22 @@ class AutomationCard(BaseAutomation):
                     logger.error("[{}] Error while setting card prems: worker not found".format(OP))
                     return False
 
-                if upsert_card_sales(self.cursor, prems[1], prems[2], prems[3], worker_id[0]) is False:
+                card = Card(
+                    debt_osd=prems[3],
+                    debt_osk=prems[4],
+                    in_balance=prems[5],
+                    out_balance=prems[6],
+                    cards_sailed_in_general=cards_sailed_in_general[0],
+
+                    expire_date=date(self.year, self.month, 1),
+                    issue_date=date(self.year, self.month, 1),
+                    card_type=str(),
+                    code=str(),
+                    owner_name=str(),
+                    coast=float(),
+                )
+
+                if upsert_card_sales(self.cursor, prems[1], prems[2], card, worker_id[0]) is False:
                     return False
             except Exception as e:
                 logger.error("[{}] Error while setting card prems: {}".format(OP, str(e)))

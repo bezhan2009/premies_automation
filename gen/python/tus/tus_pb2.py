@@ -25,14 +25,14 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ttus.proto\x1a\x1bgoogle/protobuf/empty.proto\"%\n\x10TusUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"#\n\x11TusUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\"\n\x10TusCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x80\x01\n\nTusService\x12\x36\n\rUploadTusData\x12\x11.TusUploadRequest\x1a\x12.TusUploadResponse\x12:\n\rCleanTusTable\x12\x16.google.protobuf.Empty\x1a\x11.TusCleanResponseB1Z/github.com/bezhan2009/premies_portal/gen/go/tusb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ttus.proto\x1a\x1bgoogle/protobuf/empty.proto\"%\n\x10TusUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"#\n\x11TusUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\"\n\x10TusCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x80\x01\n\nTusService\x12\x36\n\rUploadTusData\x12\x11.TusUploadRequest\x1a\x12.TusUploadResponse\x12:\n\rCleanTusTable\x12\x16.google.protobuf.Empty\x1a\x11.TusCleanResponseB\x0cZ\ngen/go/tusb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'tus_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z/github.com/bezhan2009/premies_portal/gen/go/tus'
+  _globals['DESCRIPTOR']._serialized_options = b'Z\ngen/go/tus'
   _globals['_TUSUPLOADREQUEST']._serialized_start=42
   _globals['_TUSUPLOADREQUEST']._serialized_end=79
   _globals['_TUSUPLOADRESPONSE']._serialized_start=81

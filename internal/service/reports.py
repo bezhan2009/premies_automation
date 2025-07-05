@@ -11,7 +11,9 @@ def create_zip_reports():
     reports_automation = ReportsAutomation()
 
     zip_file_name = reports_automation.create_reports_zip()
-    zip_file_path = move_and_rename_file(str("output_excels\\" + get_current_date()), zip_file_name)
+    zip_file_path = move_and_rename_file(str(
+        reports_automation.configs.automation_details.def_out_paths.zip_reports_file_path + "\\" +
+        get_current_date()), zip_file_name)
 
     clear_folder(get_config().automation_details.def_out_paths.output_dir_reports)
 
