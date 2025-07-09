@@ -7,7 +7,7 @@ from internal.service import tus
 class TusServiceServicer(tus_pb2_grpc.TusServiceServicer):
     def UploadTusData(self, request, context):
         try:
-            result = tus.tus_excel_upload(request.file_path)
+            result = tus.tus_excel_upload(request.month, request.year, request.file_path)
             return tus_pb2.TusUploadResponse(status=str(result))
         except Exception as e:
             context.abort(grpc.StatusCode.NOT_FOUND, f"No such file or directory: {str(e)}")

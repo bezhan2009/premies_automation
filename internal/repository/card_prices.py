@@ -27,8 +27,10 @@ def upload_card_prices(price_df: DataFrame) -> Exception | str:
                 continue
 
             cursor.execute(
-                sql.SQL("INSERT INTO card_prices(dcl_name, coast, category) VALUES (%s, %s, %s)"),
-                [row['DCL_NAME'], row['Coast'], row['Category']]
+                sql.SQL(
+                    "INSERT INTO card_prices(dcl_name, coast_credits, coast_cards, category) VALUES (%s, %s, %s, %s)"
+                ),
+                [row['DCL_NAME'], row['CoastCredit'], row['CoastCards'], row['Category']]
             )
         except Exception as e:
             logger.error("[{}] Error while setting the data to card prices table: {}".format(OP, str(e)))
@@ -58,7 +60,7 @@ def upload_card_prices_to_dict() -> Exception | dict:
         card_prices = cursor.fetchall()
     except Exception as e:
         logger.error("Error while getting card prices from database: {}".format(str(e)))
-        raise  # выбрасываем исключение
+        raise e
 
     if not card_prices:
         # Вместо возврата Exception, лучше выбросить
@@ -66,7 +68,7 @@ def upload_card_prices_to_dict() -> Exception | dict:
         raise Exception("No card prices were found")
 
     for card_price in card_prices:
-        coast_dict[str(card_price[1]).strip()] = float(card_price[2])
+        coast_dict[str(card_price[1]).strip()] = [float(card_price[2]), float(card_price[3])]
 
     return coast_dict
 

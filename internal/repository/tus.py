@@ -18,18 +18,15 @@ def tus_excel_upload(df: DataFrame) -> Exception | str:
     for _, row in df.iterrows():
         try:
             cursor.execute(
-                sql.SQL("INSERT INTO tus_marks (dvid, req_date, code, tus_code, mark) VALUES (%s, %s, %s, %s, %s)"),
+                sql.SQL("INSERT INTO tus_marks (surname, mark) VALUES (%s, %s)"),
                 [
-                    row['dvid'].date() if pd.notna(row['dvid']) else None,
-                    row['req_date'].date() if pd.notna(row['req_date']) else None,
-                    hash_sha256(row['code']),
-                    hash_sha256(row['tus_code']),
-                    row['mark']
+                    hash_sha256(row['ФИО']),
+                    row['БАЛЛ']
                 ]
             )
         except Exception as e:
             logger.error("[{}] Error while uploading tus: {}".format(OP, e))
-            return e
+            raise e
 
     conn.commit()
 

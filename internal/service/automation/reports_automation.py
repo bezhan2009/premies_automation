@@ -9,6 +9,7 @@ from psycopg2 import sql
 from configs.load_configs import get_config
 from internal.app.models.employee import Employee
 from internal.lib.date import get_current_date
+from internal.lib.encypter import hash_sha256
 from internal.lib.file import get_writable_cell_ref, sanitize_filename
 from internal.lib.zip import archive_directory
 from internal.service.automation.base_automation import BaseAutomation
@@ -42,11 +43,17 @@ class ReportsAutomation(BaseAutomation):
             employees_data.append(employee)
         return employees_data
 
+    def _get_employee_data(self, owner_id: int) -> Employee:
+        for owner in self.owners:
+            if owner[0] == owner_id:
+                employee = self._collect_employee_data(owner)
+                return employee
+
     def _collect_employee_data(self, owner) -> Employee:
         owner_id, owner_name = owner
 
         worker_data = self._get_worker_data(owner_id)
-        worker_place_work_data = self._get_worker_place_work_data(owner_id)
+        worker_place_work_data = self._get_worker_place_work_data(worker_data[0])
         cards_category_issued = self._get_cards_category_issued(owner_name)
         turnover_data = self._get_turnover_out_balance_debt_osd(owner_name)
         service_qualities = self._get_service_qualities_balls(worker_data[0])
@@ -65,10 +72,11 @@ class ReportsAutomation(BaseAutomation):
             type_worker=self._get_position_from_role_id(worker_data[0]),
             mobile_bank_sales=mobile_bank[0],
             overdraft_sales=overdraft[0],
-            visa_mc_sales=cards_category_issued["MC"] + cards_category_issued["VISA"] + cards_category_issued["MC Nonresident"] + cards_category_issued["VISA Nonresident"],
+            visa_mc_sales=cards_category_issued["MC"] + cards_category_issued["VISA"] + cards_category_issued[
+                "MC Nonresident"] + cards_category_issued["VISA Nonresident"],
             korty_milly=cards_category_issued["Корти милли"],
             visa_mc_vip_sales=(
-                    cards_category_issued["VISA Signature"]
+                cards_category_issued["VISA Signature"]
             ),
             visa_mc_business_sales=cards_category_issued["MC Business"] + cards_category_issued["Visa Business"],
             debt_osd_count=turnover_data[0],
@@ -84,15 +92,18 @@ class ReportsAutomation(BaseAutomation):
             "VISA": 0, "VISA Signature": 0, "Visa Business": 0, "VISA Nonresident": 0,
             "MC": 0, "MC Business": 0, "MC Nonresident": 0, "Корти милли": 0
         }
-        self.cursor.execute(count_user_cards_category_issued, {"owner_name": owner_name,
+        self.cursor.execute(count_user_cards_category_issued, {"owner_name": hash_sha256(owner_name),
                                                                "year": self.year,
                                                                "month": self.month})
+
         for card_type, count in self.cursor.fetchall():
-            categories[card_type] = count
+            categories[card_type.strip()] = count
+
         return categories
 
     def _get_turnover_out_balance_debt_osd(self, owner_name: str):
-        self.cursor.execute(count_user_cards_turnover_out_balance_debt_osd, {"owner_name": owner_name,
+        print(self.month)
+        self.cursor.execute(count_user_cards_turnover_out_balance_debt_osd, {"owner_name": hash_sha256(owner_name),
                                                                              "year": self.year,
                                                                              "month": self.month})
         res = self.cursor.fetchone()
@@ -200,7 +211,6 @@ class ReportsAutomation(BaseAutomation):
             writable_ref = get_writable_cell_ref(ws, cell_ref)
             ws[writable_ref].value = value
 
-
         # Save the new file
         timestamp = int(time.time())  # UNIX-время в секундах
         sanitized_name = sanitize_filename(f"{employee.name}_{timestamp}")
@@ -217,7 +227,7 @@ class ReportsAutomation(BaseAutomation):
             data_mapping = {
                 "A7": employee.place_work,
 
-                "C9": get_current_date(),
+                "C9": get_current_date(self.month, self.year),
                 "C12": employee.name,
                 "C14": employee.type_worker,
                 "C16": employee.salary,
@@ -244,7 +254,7 @@ class ReportsAutomation(BaseAutomation):
             data_mapping = {
                 "A7": employee.place_work,
 
-                "C9": get_current_date(),
+                "C9": get_current_date(self.month, self.year),
                 "C12": employee.name,
                 "C14": employee.type_worker,
                 "C16": employee.position,
@@ -286,11 +296,33 @@ class ReportsAutomation(BaseAutomation):
                           self.automation_configs.def_out_paths.zip_file_path)
         logger.info("Archived all employee Excel files into employee_excels.zip")
 
-    def create_reports_zip(self) -> str:
+    def create_reports_zip(self, month: int, year: int) -> str:
         try:
+            self.month = month
+            self.year = year
+
             employee_data = self._get_employees_data()
-            print(employee_data[0].name)
             self._create_zip_excels_employees(employee_data)
+        except NotFoundError as nt:
+            raise nt
+        except UndefinedRoleError as unr:
+            raise unr
+        except Exception as e:
+            logger.error("Error while creating zip file: {}".format(str(e)))
+            raise e
+        except FileNotFoundError as ef:
+            raise ef
+
+        return self.automation_configs.def_out_paths.zip_file_path
+
+    def create_report_zip_one_employee(self, owner_id: int, month: int, year: int) -> str:
+        try:
+            self.month = month
+            self.year = year
+
+            employee_data = self._get_employee_data(owner_id)
+            employees_data = [employee_data]
+            self._create_zip_excels_employees(employees_data)
         except NotFoundError as nt:
             raise nt
         except UndefinedRoleError as unr:

@@ -14,4 +14,5 @@ class Card:
     out_balance: float
     cards_sailed_in_general: int
     owner_name: str
-    coast: float
+    coast_cards: float
+    coast_credits: float

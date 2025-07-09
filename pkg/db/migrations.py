@@ -7,29 +7,11 @@ def migrate():
 
     try:
         cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS cards (
-                id              SERIAL PRIMARY KEY,
-                expire_date     DATE,
-                issue_date      DATE,
-                card_type       TEXT,
-                code            TEXT,
-                in_balance      NUMERIC,
-                debt_osd        NUMERIC,
-                debt_osk        NUMERIC,
-                out_balance     NUMERIC,
-                owner_name      TEXT,
-                coast           NUMERIC
-            );
-            """
-        )
-
-        cursor.execute(
             """      
             CREATE TABLE IF NOT EXISTS mobile_bank (
                 id SERIAL PRIMARY KEY,
                 surname TEXT,
-                inn TEXT
+                mobile_bank_connects INT
             );
             """
         )
@@ -38,11 +20,8 @@ def migrate():
             """
             CREATE TABLE IF NOT EXISTS tus_marks (
                 id SERIAL,
-                dvid DATE,
-                req_date DATE,
-                code TEXT,
-                tus_code TEXT,
-                mark INTEGER
+                surname TEXT,
+                mark FLOAT
             );
             """
         )
@@ -52,7 +31,8 @@ def migrate():
             CREATE TABLE IF NOT EXISTS card_prices (
                 id SERIAL,
                 dcl_name TEXT,
-                coast float,
+                coast_cards float,
+                coast_credits float,
                 category TEXT
             );
             """

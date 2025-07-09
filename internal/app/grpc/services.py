@@ -1,7 +1,7 @@
 from gen.python.card_prices import card_prices_pb2_grpc
 from gen.python.cards import cards_pb2_grpc
 from gen.python.mobile_bank import mobile_bank_pb2_grpc
-from gen.python.reports import get_worker_reports_pb2_grpc
+from gen.python.reports import reports_pb2_grpc
 from gen.python.tus import tus_pb2_grpc
 from gen.python.upload_file import upload_file_pb2_grpc
 from gen.python.accountant import accountant_pb2_grpc
@@ -32,7 +32,7 @@ def add_services(server):
     cards_pb2_grpc.add_CardsServiceServicer_to_server(CardsServiceServicer(), server)
 
     logger.info("Adding ReportsServiceServicer...")
-    get_worker_reports_pb2_grpc.add_ReportsServiceServicer_to_server(ReportsServiceServicer(), server)
+    reports_pb2_grpc.add_ReportsServiceServicer_to_server(ReportsServiceServicer(), server)
 
     logger.info("Adding UploadFileServiceServicer...")
     upload_file_pb2_grpc.add_UploadFileServiceServicer_to_server(UploadFileService(), server)

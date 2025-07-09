@@ -14,13 +14,13 @@ class AutomationTusMarks(BaseAutomation):
     def __init__(self):
         super().__init__("service.automation.AutomationTusMarks")
 
-    def set_average_score_owners(self):
+    def set_average_score_owners(self, month: int, year: int):
         for owner in self.owners:
             try:
                 values = {
                     "owner_name": hash_sha256(owner[1]),
-                    "year": self.year,
-                    "month": self.month,
+                    "year": year,
+                    "month": month,
                 }
 
                 self.cursor.execute(
@@ -32,8 +32,6 @@ class AutomationTusMarks(BaseAutomation):
                 if average_score is None:
                     continue
 
-                print(average_score)
-
                 self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
@@ -42,9 +40,8 @@ class AutomationTusMarks(BaseAutomation):
                 )
 
                 worker_id = self.cursor.fetchone()
-                print(worker_id)
 
-                upsert_tus_marks(self.cursor, average_score[0], worker_id[0])
+                upsert_tus_marks(self.cursor, month, year, average_score[0], worker_id[0])
             except Exception as e:
                 logger.error(f"[{self.OP}] Error while inserting workers average score: {e}")
                 return False

@@ -4,11 +4,9 @@ from internal.repository import mobile_bank
 from internal.service.automation.mobile_bank_automation import AutomationMobileBank
 
 
-def mobile_bank_excel_upload(path_file: str) -> Exception | str:
+def mobile_bank_excel_upload(month: int, year: int, path_file: str) -> Exception | str:
     df = pd.read_excel(path_file)
-    df.columns = df.columns.str.strip().str.lower()  # нормализация названий столбцов
-    df.rename(columns={'surname': 'surname', 'inn': 'inn'}, inplace=True)
-    df['inn'] = df['inn'].astype(str)
+    df["Количество"] = df["Количество"].fillna(0)
 
     mobile_bank_clean_table()
 
@@ -18,7 +16,7 @@ def mobile_bank_excel_upload(path_file: str) -> Exception | str:
 
     automation = AutomationMobileBank()
 
-    if automation.set_mobile_bank_sales() is False:
+    if automation.set_mobile_bank_sales(month, year) is False:
         raise Exception("Something went wrong. Please check xlsx file")
 
     return resp

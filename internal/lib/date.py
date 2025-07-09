@@ -9,7 +9,7 @@ def get_current_year():
     return datetime.now().year
 
 
-def get_current_date():
+def get_current_date(month: int = 0, year: int = 0):
     today = datetime.now()
 
     # Словарь для преобразования номера месяца в название в родительном падеже
@@ -28,14 +28,22 @@ def get_current_date():
         12: "Декабря"
     }
 
-    month_name = months.get(today.month, "")
-    year = today.year
+    if month in months:
+        month_name = months.get(month, "")
+    else:
+        month_name = months.get(today.month, "")
+    if year == 0:
+        year = today.year
 
     return f"{month_name} {year}"
 
 
-def get_month_date_range():
-    year, month = get_current_year(), get_current_month()
+def get_month_date_range(year: int = 0, month: int = 0):
+    if month == 0:
+        month = get_current_month()
+    if year == 0:
+        year = get_current_year()
+
     start_date = datetime(year, month, 1, tzinfo=timezone.utc)
     if month == 12:
         end_date = datetime(year + 1, 1, 1, tzinfo=timezone.utc)

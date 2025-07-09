@@ -15,8 +15,8 @@ from gen.python.card_prices import (
     card_prices_pb2_grpc
 )
 from gen.python.reports import (
-    get_worker_reports_pb2,
-    get_worker_reports_pb2_grpc
+    reports_pb2,
+    reports_pb2_grpc
 )
 from gen.python.tus import (
     tus_pb2,

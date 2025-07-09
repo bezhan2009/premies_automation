@@ -1,14 +1,14 @@
 count_mobile_bank_perms = """
             SELECT
-                (COUNT(*) * 5) AS mobile_bank,
-                COUNT(*) AS mobile_bank_connects
+                (COUNT(*) * 10) AS mobile_bank,
+                mobile_bank_connects
             FROM mobile_bank
-            WHERE surname = %(surname)s
+            WHERE surname = %(surname)s group by mobile_bank_connects
 """
 
 
 get_mobile_bank_data = """
-            SELECT inn 
+            SELECT mobile_bank_connects 
             FROM mobile_bank
             WHERE surname = %(surname)s
 """

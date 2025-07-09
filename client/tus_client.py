@@ -10,7 +10,7 @@ def run():
     channel = grpc.insecure_channel('localhost:50051')
     stub = tus_pb2_grpc.TusServiceStub(channel)
 
-    response_upload = stub.UploadTusData(tus_pb2.TusUploadRequest(file_path="./uploads/tus_marks.xlsx"))
+    response_upload = stub.UploadTusData(tus_pb2.TusUploadRequest(month=3, year=2025, file_path="./uploads/tus_marks.xlsx"))
     print(response_upload.status)
     #
     # response_clean = stub.CleanTusTable(Empty())

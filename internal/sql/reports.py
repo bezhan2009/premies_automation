@@ -2,7 +2,7 @@ count_user_cards_category_issued = """
         SELECT
             cp.category,
             COUNT(*) AS cards_count
-        FROM cards c
+        FROM card_details c
         JOIN card_prices cp ON c.card_type = cp.dcl_name
         WHERE c.owner_name = %(owner_name)s
           AND EXTRACT(YEAR FROM c.issue_date) = %(year)s
@@ -15,9 +15,9 @@ count_user_cards_turnover_out_balance_debt_osd = """
         SELECT
             SUM(debt_osd) AS debt_osd,
             SUM(out_balance) AS out_balance,
-            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover,
-            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.0001 AS turnover
-        FROM cards
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover_cards,
+            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.0001 AS turnover_credits
+        FROM card_details
         WHERE owner_name = %(owner_name)s
           AND expire_date IS NOT NULL;
 """

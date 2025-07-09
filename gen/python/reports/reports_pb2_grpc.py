@@ -3,8 +3,7 @@
 import grpc
 import warnings
 
-import gen.python.reports.get_worker_reports_pb2 as get__worker__reports__pb2
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import gen.python.reports.reports_pb2 as reports__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -19,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in get_worker_reports_pb2_grpc.py depends on'
+        + f' but the generated code in reports_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -37,8 +36,13 @@ class ReportsServiceStub(object):
         """
         self.CreateZIPReports = channel.unary_unary(
                 '/ReportsService/CreateZIPReports',
-                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-                response_deserializer=get__worker__reports__pb2.CreateZIPReportsResponse.FromString,
+                request_serializer=reports__pb2.CreateZIPReportsRequest.SerializeToString,
+                response_deserializer=reports__pb2.CreateZIPReportsResponse.FromString,
+                _registered_method=True)
+        self.CreateExcelReport = channel.unary_unary(
+                '/ReportsService/CreateExcelReport',
+                request_serializer=reports__pb2.CreateExcelReportRequest.SerializeToString,
+                response_deserializer=reports__pb2.CreateExcelReportResponse.FromString,
                 _registered_method=True)
 
 
@@ -46,8 +50,13 @@ class ReportsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def CreateZIPReports(self, request, context):
-        """rpc CreateExcelReport (CreateExcelReportRequest) returns (CreateExcelReportResponse);
-        """
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateExcelReport(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -57,8 +66,13 @@ def add_ReportsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CreateZIPReports': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateZIPReports,
-                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                    response_serializer=get__worker__reports__pb2.CreateZIPReportsResponse.SerializeToString,
+                    request_deserializer=reports__pb2.CreateZIPReportsRequest.FromString,
+                    response_serializer=reports__pb2.CreateZIPReportsResponse.SerializeToString,
+            ),
+            'CreateExcelReport': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateExcelReport,
+                    request_deserializer=reports__pb2.CreateExcelReportRequest.FromString,
+                    response_serializer=reports__pb2.CreateExcelReportResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -86,8 +100,35 @@ class ReportsService(object):
             request,
             target,
             '/ReportsService/CreateZIPReports',
-            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            get__worker__reports__pb2.CreateZIPReportsResponse.FromString,
+            reports__pb2.CreateZIPReportsRequest.SerializeToString,
+            reports__pb2.CreateZIPReportsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateExcelReport(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ReportsService/CreateExcelReport',
+            reports__pb2.CreateExcelReportRequest.SerializeToString,
+            reports__pb2.CreateExcelReportResponse.FromString,
             options,
             channel_credentials,
             insecure,

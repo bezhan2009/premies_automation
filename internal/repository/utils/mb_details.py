@@ -7,18 +7,19 @@ from pkg.logger.logger import setup_logger
 logger = setup_logger(__name__)
 
 
-def upload_mb_details(cursor, worker_id: int, mb: MobileBank):
+def upload_mb_details(cursor, month: int, year: int, worker_id: int, mb: MobileBank):
     try:
-        start_date, end_date = get_month_date_range()
+        start_date, end_date = get_month_date_range(year, month)
+        created_ts = start_date
 
         cursor.execute(
             """
             SELECT id FROM mobile_bank_details
             WHERE worker_id = %s 
-              AND inn = %s
+              AND connects = %s
               AND created_at >= %s AND created_at < %s
             """,
-            (worker_id, mb.inn, start_date, end_date)
+            (worker_id, mb.connects, start_date, end_date)
         )
         record = cursor.fetchone()
 
@@ -26,20 +27,20 @@ def upload_mb_details(cursor, worker_id: int, mb: MobileBank):
             cursor.execute(
                 """
                 UPDATE mobile_bank_details
-                SET inn = %s,
+                SET connects = %s,
                     prem = %s,
-                    updated_at = CURRENT_TIMESTAMP
+                    updated_at = %s
                 WHERE id = %s
                 """,
-                (mb.inn, mb.prem, record[0])
+                (mb.connects, mb.prem, created_ts, record[0])
             )
         else:
             cursor.execute(
                 """
-                INSERT INTO mobile_bank_details(created_at, updated_at, inn, prem, worker_id)
-                VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, %s, %s, %s)
+                INSERT INTO mobile_bank_details(created_at, updated_at, connects, prem, worker_id)
+                VALUES (%s, %s, %s, %s, %s)
                 """,
-                (mb.inn, mb.prem, worker_id)
+                (created_ts, created_ts, mb.connects, mb.prem, worker_id)
             )
 
     except Exception as e:

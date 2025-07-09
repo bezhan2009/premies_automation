@@ -11,6 +11,8 @@ service MobileBankService {
 
 message MobileBankUploadRequest {
   string file_path = 1;
+  int32 month = 2;
+  int32 year = 3;
 }
 
 message MobileBankUploadResponse {

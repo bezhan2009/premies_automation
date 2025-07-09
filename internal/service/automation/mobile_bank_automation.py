@@ -33,7 +33,7 @@ class AutomationMobileBank(BaseAutomation):
         for row in res:
             mobile_banks.append(
                 MobileBank(
-                    inn=row[0],
+                    connects=row[0],
                     prem=self.configs.service.mobile_bank_prem,
                     owner_name=worker_name
                 )
@@ -41,16 +41,16 @@ class AutomationMobileBank(BaseAutomation):
 
         return mobile_banks
 
-    def _set_mobile_bank_details(self, worker_id: int, mb_details: list[MobileBank]) -> bool:
+    def _set_mobile_bank_details(self, month: int, year: int, worker_id: int, mb_details: list[MobileBank]) -> bool:
         try:
             for mb in mb_details:
-                upload_mb_details(self.cursor, worker_id, mb)
+                upload_mb_details(self.cursor, month, year, worker_id, mb)
         except Exception as e:
             return False
 
         return True
 
-    def set_mobile_bank_sales(self):
+    def set_mobile_bank_sales(self, month: int, year: int):
         OP = self.OP + ".set_mobile_bank_sales"
 
         for owner in self.owners:
@@ -78,8 +78,15 @@ class AutomationMobileBank(BaseAutomation):
 
                 worker_id = self.cursor.fetchone()
 
-                upsert_mobile_bank_sales(self.cursor, mobile_bank_sales[0], mobile_bank_sales[1], worker_id[0])
-                self._set_mobile_bank_details(worker_id[0], self._get_mobile_bank_details(owner[1], values))
+                upsert_mobile_bank_sales(
+                    self.cursor,
+                    month,
+                    year,
+                    mobile_bank_sales[0],
+                    mobile_bank_sales[1],
+                    worker_id[0]
+                )
+                # self._set_mobile_bank_details(month, year, worker_id[0], self._get_mobile_bank_details(owner[1], values))
             except Exception as e:
                 logger.error("[{}] Error while setting mobile bank sales: {}".format(OP, e))
                 return False

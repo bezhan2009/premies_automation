@@ -8,7 +8,7 @@ from pkg.logger.logger import setup_logger
 logger = setup_logger(__name__)
 
 
-def upload_cards(file_path: str) -> Exception | str:
+def upload_cards(month: int, year: int, file_path: str) -> Exception | str:
     OP = "service.upload_cards"
 
     try:
@@ -17,19 +17,17 @@ def upload_cards(file_path: str) -> Exception | str:
         logger.error("[{}] File not found {}".format(OP, file_path))
         raise e
 
-    clean_cards_table()
-
-    resp = cards.upload_cards(df, get_coast_dict())
+    resp = cards.upload_cards(df, get_coast_dict(), month, year)
     if resp.count("Successfully") == 0:
         raise Exception("Something went wrong")
 
     automation = AutomationCard()
 
-    if automation.set_workers_cards_prem() is not True:
+    if automation.set_workers_cards_prem(month, year) is not True:
         logger.error("[{}] Error setting workers card prem please check xlsx file".format(OP))
         raise Exception("Error setting workers card prem please check your xlsx file")
 
-    if automation.set_workers_turnover_and_activation_prems() is not True:
+    if automation.set_workers_turnover_and_activation_prems(month, year) is not True:
         logger.error("[{}] Error setting turnovers workers please check your xlsx file".format(OP))
         raise Exception("Error setting turnovers workers please check your xlsx file")
 

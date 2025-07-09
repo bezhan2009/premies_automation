@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x63\x61rds.proto\x1a\x1bgoogle/protobuf/empty.proto\"\'\n\x12\x43\x61rdsUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"%\n\x13\x43\x61rdsUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"$\n\x12\x43\x61rdsCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x8c\x01\n\x0c\x43\x61rdsService\x12<\n\x0fUploadCardsData\x12\x13.CardsUploadRequest\x1a\x14.CardsUploadResponse\x12>\n\x0f\x43leanCardsTable\x12\x16.google.protobuf.Empty\x1a\x13.CardsCleanResponseB\x0eZ\x0cgen/go/cardsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x63\x61rds.proto\x1a\x1bgoogle/protobuf/empty.proto\"D\n\x12\x43\x61rdsUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\x12\r\n\x05month\x18\x02 \x01(\x05\x12\x0c\n\x04year\x18\x03 \x01(\x05\"%\n\x13\x43\x61rdsUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"$\n\x12\x43\x61rdsCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x8c\x01\n\x0c\x43\x61rdsService\x12<\n\x0fUploadCardsData\x12\x13.CardsUploadRequest\x1a\x14.CardsUploadResponse\x12>\n\x0f\x43leanCardsTable\x12\x16.google.protobuf.Empty\x1a\x13.CardsCleanResponseB\x0eZ\x0cgen/go/cardsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,11 +34,11 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\014gen/go/cards'
   _globals['_CARDSUPLOADREQUEST']._serialized_start=44
-  _globals['_CARDSUPLOADREQUEST']._serialized_end=83
-  _globals['_CARDSUPLOADRESPONSE']._serialized_start=85
-  _globals['_CARDSUPLOADRESPONSE']._serialized_end=122
-  _globals['_CARDSCLEANRESPONSE']._serialized_start=124
-  _globals['_CARDSCLEANRESPONSE']._serialized_end=160
-  _globals['_CARDSSERVICE']._serialized_start=163
-  _globals['_CARDSSERVICE']._serialized_end=303
+  _globals['_CARDSUPLOADREQUEST']._serialized_end=112
+  _globals['_CARDSUPLOADRESPONSE']._serialized_start=114
+  _globals['_CARDSUPLOADRESPONSE']._serialized_end=151
+  _globals['_CARDSCLEANRESPONSE']._serialized_start=153
+  _globals['_CARDSCLEANRESPONSE']._serialized_end=189
+  _globals['_CARDSSERVICE']._serialized_start=192
+  _globals['_CARDSSERVICE']._serialized_end=332
 # @@protoc_insertion_point(module_scope)

@@ -8,7 +8,7 @@ def run():
     stub = mobile_bank_pb2_grpc.MobileBankServiceStub(channel)
 
     response_upload = stub.UploadMobileBankData(
-        mobile_bank_pb2.MobileBankUploadRequest(file_path="./uploads/mobile_bank.xlsx"))
+        mobile_bank_pb2.MobileBankUploadRequest(month=3, year=2025, file_path="./uploads/mobile_bank.xlsx"))
     print(response_upload.status)
 
     # response_clean = stub.CleanMobileBankTable(Empty())

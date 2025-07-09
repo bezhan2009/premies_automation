@@ -7,7 +7,7 @@ from internal.service import mobile_bank
 class MobileBankServiceServicer(mobile_bank_pb2_grpc.MobileBankServiceServicer):
     def UploadMobileBankData(self, request, context):
         try:
-            result = mobile_bank.mobile_bank_excel_upload(request.file_path)
+            result = mobile_bank.mobile_bank_excel_upload(request.month, request.year, request.file_path)
             return mobile_bank_pb2.MobileBankUploadResponse(status=str(result))
         except Exception as e:
             context.abort(grpc.StatusCode.NOT_FOUND, f"No such file or directory: {str(e)}")

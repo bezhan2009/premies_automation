@@ -43,4 +43,4 @@ def get_connection():
 
 def get_cursor():
     global _cursor
-    return _cursor
+    return _connection.cursor()

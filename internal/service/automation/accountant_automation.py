@@ -36,7 +36,6 @@ class AccountantAutomation(BaseAutomation):
     def _get_accountant_data(self) -> List[Accountant]:
         accountant_data = []
         for owner in self.owners:
-            print(owner)
             accountant = self._collect_accountant_data(owner)
             accountant_data.append(accountant)
         return accountant_data

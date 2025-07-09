@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11mobile_bank.proto\x1a\x1bgoogle/protobuf/empty.proto\",\n\x17MobileBankUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\"*\n\x18MobileBankUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\")\n\x17MobileBankCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xaa\x01\n\x11MobileBankService\x12K\n\x14UploadMobileBankData\x12\x18.MobileBankUploadRequest\x1a\x19.MobileBankUploadResponse\x12H\n\x14\x43leanMobileBankTable\x12\x16.google.protobuf.Empty\x1a\x18.MobileBankCleanResponseB\x14Z\x12gen/go/mobile_bankb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11mobile_bank.proto\x1a\x1bgoogle/protobuf/empty.proto\"I\n\x17MobileBankUploadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\x12\r\n\x05month\x18\x02 \x01(\x05\x12\x0c\n\x04year\x18\x03 \x01(\x05\"*\n\x18MobileBankUploadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\")\n\x17MobileBankCleanResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xaa\x01\n\x11MobileBankService\x12K\n\x14UploadMobileBankData\x12\x18.MobileBankUploadRequest\x1a\x19.MobileBankUploadResponse\x12H\n\x14\x43leanMobileBankTable\x12\x16.google.protobuf.Empty\x1a\x18.MobileBankCleanResponseB\x14Z\x12gen/go/mobile_bankb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,11 +34,11 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\022gen/go/mobile_bank'
   _globals['_MOBILEBANKUPLOADREQUEST']._serialized_start=50
-  _globals['_MOBILEBANKUPLOADREQUEST']._serialized_end=94
-  _globals['_MOBILEBANKUPLOADRESPONSE']._serialized_start=96
-  _globals['_MOBILEBANKUPLOADRESPONSE']._serialized_end=138
-  _globals['_MOBILEBANKCLEANRESPONSE']._serialized_start=140
-  _globals['_MOBILEBANKCLEANRESPONSE']._serialized_end=181
-  _globals['_MOBILEBANKSERVICE']._serialized_start=184
-  _globals['_MOBILEBANKSERVICE']._serialized_end=354
+  _globals['_MOBILEBANKUPLOADREQUEST']._serialized_end=123
+  _globals['_MOBILEBANKUPLOADRESPONSE']._serialized_start=125
+  _globals['_MOBILEBANKUPLOADRESPONSE']._serialized_end=167
+  _globals['_MOBILEBANKCLEANRESPONSE']._serialized_start=169
+  _globals['_MOBILEBANKCLEANRESPONSE']._serialized_end=210
+  _globals['_MOBILEBANKSERVICE']._serialized_start=213
+  _globals['_MOBILEBANKSERVICE']._serialized_end=383
 # @@protoc_insertion_point(module_scope)

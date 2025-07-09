@@ -15,7 +15,7 @@ class BaseAutomation:
         self.conn = get_connection()
         self.cursor = get_cursor()
         if use_month:
-            self.month = 3
+            self.month = get_current_month()
         if use_year:
             self.year = get_current_year()
         self.owners = self._fetch_owners()

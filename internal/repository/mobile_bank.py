@@ -16,12 +16,12 @@ def mobile_bank_excel_upload(df: DataFrame) -> Exception | str:
     for _, row in df.iterrows():
         try:
             cursor.execute(
-                sql.SQL("INSERT INTO mobile_bank (surname, inn) VALUES (%s, %s)"),
-                [hash_sha256(row['surname']), row['inn']]
+                sql.SQL("INSERT INTO mobile_bank (surname, mobile_bank_connects) VALUES (%s, %s)"),
+                [hash_sha256(row['ФИО']), int(row['Количество'])]
             )
         except Exception as e:
             logger.error("[{}] Error while setting the data to mobile bank table: {}".format(OP, str(e)))
-            return e
+            raise e
 
     conn.commit()
 
