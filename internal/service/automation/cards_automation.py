@@ -114,7 +114,7 @@ class AutomationCard(BaseAutomation):
 
                 if not worker_id:
                     logger.error("[{}] Error while setting card prems: worker not found".format(OP))
-                    return False
+                    continue
 
                 card = Card(
                     debt_osd=prems[3],
@@ -173,6 +173,8 @@ class AutomationCard(BaseAutomation):
                 )
 
                 worker_id = self.cursor.fetchone()
+                if worker_id is None:
+                    continue
 
                 if upsert_card_turnovers(self.cursor, month, year, cards_turnover[0] / Decimal('0.8'),
                                          cards_turnover[0],

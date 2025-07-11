@@ -34,7 +34,7 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
 
             card = cursor.fetchone()
             if card is not None:
-                logger.warning("[{}] Card already exists: {}".format(OP, str(row['Счёт ПК'])))
+                # logger.warning("[{}] Card already exists: {}".format(OP, str(row['Счёт ПК'])))
                 continue
 
             card_type = str(row['Продукт']).strip()
@@ -49,7 +49,7 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
 
             worker_id = cursor.fetchone()
             if worker_id is None:
-                logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
+                # logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
                 continue
 
             values = (

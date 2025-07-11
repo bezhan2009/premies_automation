@@ -53,12 +53,19 @@ class ReportsAutomation(BaseAutomation):
         owner_id, owner_name = owner
 
         worker_data = self._get_worker_data(owner_id)
+
         worker_place_work_data = self._get_worker_place_work_data(worker_data[0])
+
         cards_category_issued = self._get_cards_category_issued(owner_name)
+
         turnover_data = self._get_turnover_out_balance_debt_osd(owner_name)
+
         service_qualities = self._get_service_qualities_balls(worker_data[0])
+
         mobile_bank = self._get_mobile_bank_perms(worker_data[0])
+
         overdraft = self._get_overdraft_perm(worker_data[0])
+
         activated_cards = self._get_activated_card_perms(worker_data[0])
 
         return Employee(
@@ -102,7 +109,6 @@ class ReportsAutomation(BaseAutomation):
         return categories
 
     def _get_turnover_out_balance_debt_osd(self, owner_name: str):
-        print(self.month)
         self.cursor.execute(count_user_cards_turnover_out_balance_debt_osd, {"owner_name": hash_sha256(owner_name),
                                                                              "year": self.year,
                                                                              "month": self.month})
