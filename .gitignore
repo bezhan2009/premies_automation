@@ -5,6 +5,5 @@ logs
 
 # Security Files
 .env
-uploads
 *.zip
-*.xlsx
+
