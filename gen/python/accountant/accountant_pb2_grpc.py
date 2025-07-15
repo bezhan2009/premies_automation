@@ -4,7 +4,6 @@ import grpc
 import warnings
 
 import gen.python.accountant.accountant_pb2 as accountant__pb2
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -36,8 +35,8 @@ class AccountantsServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CreateXLSXAccountant = channel.unary_unary(
-                '/AccountantsServicer/CreateXLSXAccountant',
-                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                '/AccountantsService/CreateXLSXAccountant',
+                request_serializer=accountant__pb2.CreateXLSXAccountantsRequest.SerializeToString,
                 response_deserializer=accountant__pb2.CreateXLSXAccountantsResponse.FromString,
                 _registered_method=True)
 
@@ -56,14 +55,14 @@ def add_AccountantsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CreateXLSXAccountant': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateXLSXAccountant,
-                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    request_deserializer=accountant__pb2.CreateXLSXAccountantsRequest.FromString,
                     response_serializer=accountant__pb2.CreateXLSXAccountantsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'AccountantsServicer', rpc_method_handlers)
+            'AccountantsService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('AccountantsServicer', rpc_method_handlers)
+    server.add_registered_method_handlers('AccountantsService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -84,8 +83,8 @@ class AccountantsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/AccountantsServicer/CreateXLSXAccountant',
-            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            '/AccountantsService/CreateXLSXAccountant',
+            accountant__pb2.CreateXLSXAccountantsRequest.SerializeToString,
             accountant__pb2.CreateXLSXAccountantsResponse.FromString,
             options,
             channel_credentials,

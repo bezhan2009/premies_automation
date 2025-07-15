@@ -96,7 +96,7 @@ class AutomationCard(BaseAutomation):
                 )
                 prems_dates = self.cursor.fetchone()
 
-                if prems is None:
+                if prems_dates is None:
                     continue
 
                 self.cursor.execute(

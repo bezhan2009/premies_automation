@@ -1,10 +1,12 @@
-def calculate_bonus(base_bonus, call_center_score, test_score):
+def calculate_bonus(base_bonus, call_center_score, test_score, salary):
     """
     Рассчитывает итоговую премию с учетом коэффициентов по Call Center и Tests.
+    Премия не может превышать 1.5 оклада (salary).
 
     :param base_bonus: float, исходная премия в сомони
     :param call_center_score: float, баллы за Call Center (0-10)
     :param test_score: float, баллы за Tests (0-10)
+    :param salary: float, оклад в сомони
     :return: итоговая премия в сомони
     """
 
@@ -41,5 +43,10 @@ def calculate_bonus(base_bonus, call_center_score, test_score):
     total_coef = call_center_coef + test_coef
 
     final_bonus = base_bonus * (1 + total_coef / 100)
+
+    # Ограничиваем премию полутора окладами
+    max_bonus = 1.5 * salary
+    if final_bonus > max_bonus:
+        final_bonus = max_bonus
 
     return final_bonus

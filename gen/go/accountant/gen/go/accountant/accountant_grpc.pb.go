@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AccountantsService_CreateXLSXAccountant_FullMethodName = "/AccountantsServicer/CreateXLSXAccountant"
+	AccountantsService_CreateXLSXAccountant_FullMethodName = "/AccountantsService/CreateXLSXAccountant"
 )
 
-// AccountantsServiceClient is the client API for AccountantsServicer service.
+// AccountantsServiceClient is the client API for AccountantsService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountantsServiceClient interface {
-	CreateXLSXAccountant(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateXLSXAccountantsResponse, error)
+	CreateXLSXAccountant(ctx context.Context, in *CreateXLSXAccountantsRequest, opts ...grpc.CallOption) (*CreateXLSXAccountantsResponse, error)
 }
 
 type accountantsServiceClient struct {
@@ -38,7 +37,7 @@ func NewAccountantsServiceClient(cc grpc.ClientConnInterface) AccountantsService
 	return &accountantsServiceClient{cc}
 }
 
-func (c *accountantsServiceClient) CreateXLSXAccountant(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateXLSXAccountantsResponse, error) {
+func (c *accountantsServiceClient) CreateXLSXAccountant(ctx context.Context, in *CreateXLSXAccountantsRequest, opts ...grpc.CallOption) (*CreateXLSXAccountantsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateXLSXAccountantsResponse)
 	err := c.cc.Invoke(ctx, AccountantsService_CreateXLSXAccountant_FullMethodName, in, out, cOpts...)
@@ -48,11 +47,11 @@ func (c *accountantsServiceClient) CreateXLSXAccountant(ctx context.Context, in 
 	return out, nil
 }
 
-// AccountantsServiceServer is the server API for AccountantsServicer service.
+// AccountantsServiceServer is the server API for AccountantsService service.
 // All implementations must embed UnimplementedAccountantsServiceServer
 // for forward compatibility.
 type AccountantsServiceServer interface {
-	CreateXLSXAccountant(context.Context, *emptypb.Empty) (*CreateXLSXAccountantsResponse, error)
+	CreateXLSXAccountant(context.Context, *CreateXLSXAccountantsRequest) (*CreateXLSXAccountantsResponse, error)
 	mustEmbedUnimplementedAccountantsServiceServer()
 }
 
@@ -63,7 +62,7 @@ type AccountantsServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountantsServiceServer struct{}
 
-func (UnimplementedAccountantsServiceServer) CreateXLSXAccountant(context.Context, *emptypb.Empty) (*CreateXLSXAccountantsResponse, error) {
+func (UnimplementedAccountantsServiceServer) CreateXLSXAccountant(context.Context, *CreateXLSXAccountantsRequest) (*CreateXLSXAccountantsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateXLSXAccountant not implemented")
 }
 func (UnimplementedAccountantsServiceServer) mustEmbedUnimplementedAccountantsServiceServer() {}
@@ -88,7 +87,7 @@ func RegisterAccountantsServiceServer(s grpc.ServiceRegistrar, srv AccountantsSe
 }
 
 func _AccountantsService_CreateXLSXAccountant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(CreateXLSXAccountantsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -100,16 +99,16 @@ func _AccountantsService_CreateXLSXAccountant_Handler(srv interface{}, ctx conte
 		FullMethod: AccountantsService_CreateXLSXAccountant_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountantsServiceServer).CreateXLSXAccountant(ctx, req.(*emptypb.Empty))
+		return srv.(AccountantsServiceServer).CreateXLSXAccountant(ctx, req.(*CreateXLSXAccountantsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// AccountantsService_ServiceDesc is the grpc.ServiceDesc for AccountantsServicer service.
+// AccountantsService_ServiceDesc is the grpc.ServiceDesc for AccountantsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AccountantsService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "AccountantsServicer",
+	ServiceName: "AccountantsService",
 	HandlerType: (*AccountantsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

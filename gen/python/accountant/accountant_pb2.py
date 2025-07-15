@@ -22,10 +22,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x61\x63\x63ountant.proto\x1a\x1bgoogle/protobuf/empty.proto\"2\n\x1d\x43reateXLSXAccountantsResponse\x12\x11\n\txlsx_path\x18\x01 \x01(\t2d\n\x12\x41\x63\x63ountantsService\x12N\n\x14\x43reateXLSXAccountant\x12\x16.google.protobuf.Empty\x1a\x1e.CreateXLSXAccountantsResponseB\x13Z\x11gen/go/accountantb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x61\x63\x63ountant.proto\";\n\x1c\x43reateXLSXAccountantsRequest\x12\r\n\x05month\x18\x01 \x01(\x05\x12\x0c\n\x04year\x18\x02 \x01(\x05\"2\n\x1d\x43reateXLSXAccountantsResponse\x12\x11\n\txlsx_path\x18\x01 \x01(\t2k\n\x12\x41\x63\x63ountantsService\x12U\n\x14\x43reateXLSXAccountant\x12\x1d.CreateXLSXAccountantsRequest\x1a\x1e.CreateXLSXAccountantsResponseB\x13Z\x11gen/go/accountantb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,8 +32,10 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'accountant_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\021gen/go/accountant'
-  _globals['_CREATEXLSXACCOUNTANTSRESPONSE']._serialized_start=49
-  _globals['_CREATEXLSXACCOUNTANTSRESPONSE']._serialized_end=99
-  _globals['_ACCOUNTANTSSERVICE']._serialized_start=101
-  _globals['_ACCOUNTANTSSERVICE']._serialized_end=201
+  _globals['_CREATEXLSXACCOUNTANTSREQUEST']._serialized_start=20
+  _globals['_CREATEXLSXACCOUNTANTSREQUEST']._serialized_end=79
+  _globals['_CREATEXLSXACCOUNTANTSRESPONSE']._serialized_start=81
+  _globals['_CREATEXLSXACCOUNTANTSRESPONSE']._serialized_end=131
+  _globals['_ACCOUNTANTSSERVICE']._serialized_start=133
+  _globals['_ACCOUNTANTSSERVICE']._serialized_end=240
 # @@protoc_insertion_point(module_scope)

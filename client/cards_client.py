@@ -11,7 +11,7 @@ def run():
     stub = cards_pb2_grpc.CardsServiceStub(channel)
 
     response_upload = stub.UploadCardsData(
-        cards_pb2.CardsUploadRequest(month=6, year=2025, file_path="./uploads/cards.xlsx"))
+        cards_pb2.CardsUploadRequest(month=5, year=2025, file_path="./client/Маай (2).xlsx"))
     print(response_upload.status)
 
     # response_clean = stub.CleanCardsTable(Empty())

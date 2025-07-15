@@ -8,7 +8,7 @@ class AccountantsService(accountant_pb2_grpc.AccountantsServiceServicer):
     def CreateXLSXAccountant(self, request, context):
         try:
             print("=== gRPC CreateXLSXAccountant STARTED ===")
-            result = accountant.create_report_for_accountant()
+            result = accountant.create_report_for_accountant(request.month, request.year)
             return accountant_pb2.CreateXLSXAccountantsResponse(xlsx_path=str(result))
         except Exception as e:
             context.abort(grpc.StatusCode.INTERNAL, f"Something went wrong: {str(e)}")

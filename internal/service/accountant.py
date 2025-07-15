@@ -6,11 +6,11 @@ from pkg.logger.logger import setup_logger
 logger = setup_logger(__name__)
 
 
-def create_report_for_accountant() -> str:
+def create_report_for_accountant(month: int, year: int) -> str:
     logger.info('Creating report for accountant')
     try:
         accountant = AccountantAutomation()
-        file_path = accountant.create_reports_xlsx()
+        file_path = accountant.create_reports_xlsx(month, year)
     except NotFoundError as nt:
         raise nt
     except UndefinedRoleError as unr:

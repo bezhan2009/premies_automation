@@ -1,11 +1,14 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-
 option go_package = "gen/go/accountant";
 
 service AccountantsService {
-  rpc CreateXLSXAccountant (google.protobuf.Empty) returns (CreateXLSXAccountantsResponse);
+  rpc CreateXLSXAccountant (CreateXLSXAccountantsRequest) returns (CreateXLSXAccountantsResponse);
+}
+
+message CreateXLSXAccountantsRequest {
+  int32 month = 1;
+  int32 year = 2;
 }
 
 message CreateXLSXAccountantsResponse {
