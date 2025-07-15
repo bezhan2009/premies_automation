@@ -1,7 +1,6 @@
 from datetime import date
 
 from psycopg2 import sql
-from decimal import Decimal
 from internal.lib.encypter import (hash_sha256)
 from internal.repository.utils.utils import (
     upsert_card_sales,
@@ -12,6 +11,7 @@ from internal.service.automation.base_automation import BaseAutomation
 from internal.sql.cards_automation import (
     count_workers_prem_query,
     count_turnovers_and_activation_cards_worker,
+    count_turnovers_and_activation_cards_worker_credit,
     count_workers_cards_sailed_in_general,
     count_workers_cards_sailed,
     count_workers_prem_query_dates,
@@ -165,11 +165,39 @@ class AutomationCard(BaseAutomation):
         for owner_id, owner_name in self.owners:
             try:
                 self.cursor.execute(
-                    sql.SQL(count_turnovers_and_activation_cards_worker),
+                    sql.SQL(get_worker_id_by_owner_name),
                     {
-                        "owner_name": hash_sha256(owner_name),
+                        "owner_name": owner_name,
                     }
                 )
+
+                worker_id = self.cursor.fetchone()
+
+                if not worker_id:
+                    logger.error("[{}] Error while setting card prems: worker not found".format(OP))
+                    continue
+
+                if worker_id[1] == 6:
+                    self.cursor.execute(
+                        sql.SQL(count_turnovers_and_activation_cards_worker),
+                        {
+                            "owner_name": hash_sha256(owner_name),
+                            "month": month,
+                            "year": year
+                        }
+                    )
+                elif worker_id[1] == 8:
+                    self.cursor.execute(
+                        sql.SQL(count_turnovers_and_activation_cards_worker_credit),
+                        {
+                            "owner_name": hash_sha256(owner_name),
+                            "month": month,
+                            "year": year
+                        }
+                    )
+                else:
+                    logger.error("[{}] Error while setting card prems: workers role id not found".format(OP))
+                    raise NotFoundError("worker role id not found")
 
                 cards_turnover = self.cursor.fetchone()
                 if cards_turnover is None or cards_turnover[0] is None:
@@ -186,9 +214,9 @@ class AutomationCard(BaseAutomation):
                 if worker_id is None:
                     continue
 
-                if upsert_card_turnovers(self.cursor, month, year, cards_turnover[0] / Decimal('0.8'),
-                                         cards_turnover[0],
-                                         cards_turnover[1], worker_id[0]) is False:
+                if upsert_card_turnovers(self.cursor, month, year, cards_turnover[1],
+                                         cards_turnover[2],
+                                         cards_turnover[0], worker_id[0]) is False:
                     return False
             except Exception as e:
                 logger.error(f"[{OP}] Error for {owner_name}: {e}")

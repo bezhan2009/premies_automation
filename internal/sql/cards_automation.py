@@ -9,6 +9,8 @@ count_workers_prem_query = """
             SUM(out_balance) AS out_balance
         FROM card_details
         WHERE owner_name = %(owner_name)s
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month';
 """
 
 count_workers_prem_query_dates = """
@@ -36,10 +38,12 @@ count_workers_cards_sailed = """
 """
 
 count_workers_cards_sailed_in_general = """
-    SELECT
+        SELECT
             COUNT(*) AS cards_issued
         FROM card_details
         WHERE owner_name = %(owner_name)s
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month';
 """
 
 count_workers_card_turnover_query = """
@@ -62,14 +66,12 @@ count_workers_cards_activations_prem = """
 
 count_turnovers_and_activation_cards_worker = """
         SELECT
-            (SELECT
-                (COUNT(*) * 0.8) AS activated_cards_prem
-            FROM card_details
-            WHERE owner_name = %(owner_name)s
-              AND debt_osd > 0
-              AND expire_date IS NOT NULL
-            ),
-            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
+            COUNT(*) * 0.8 AS activated_cards_prem,
+            COUNT(*) FILTER (
+                WHERE EXTRACT(MONTH FROM issue_date) = %(month)s
+                  AND EXTRACT(YEAR FROM issue_date) = %(year)s
+            ) AS activated_cards,
+            SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.00005 AS turnover
         FROM card_details
         WHERE owner_name = %(owner_name)s
           AND debt_osd > 0
@@ -78,14 +80,12 @@ count_turnovers_and_activation_cards_worker = """
 
 count_turnovers_and_activation_cards_worker_credit = """
         SELECT
-            (SELECT
-                (COUNT(*) * 0.8) AS activated_cards_prem
-            FROM card_details
-            WHERE owner_name = %(owner_name)s
-              AND debt_osd > 0
-              AND expire_date IS NOT NULL
-            ),
-            SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.0001 AS turnover
+            COUNT(*) * 0.8 AS activated_cards_prem,
+            COUNT(*) FILTER (
+                WHERE EXTRACT(MONTH FROM issue_date) = %(month)s
+                  AND EXTRACT(YEAR FROM issue_date) = %(year)s
+            ) AS activated_cards,
+            SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.0001 AS turnover
         FROM card_details
         WHERE owner_name = %(owner_name)s
           AND debt_osd > 0
