@@ -8,7 +8,7 @@ logger = setup_logger(__name__)
 
 
 def get_workers(cursor):
-    cursor.execute("SELECT id, username FROM users WHERE role_id = 2 OR role_id = 6 OR role_id = 8")
+    cursor.execute("SELECT id, full_name FROM users WHERE role_id = 2 OR role_id = 6 OR role_id = 8")
     return cursor.fetchall()
 
 
