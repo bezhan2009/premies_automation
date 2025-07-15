@@ -14,6 +14,7 @@ from internal.sql.cards_automation import (
     count_turnovers_and_activation_cards_worker,
     count_workers_cards_sailed_in_general,
     count_workers_cards_sailed,
+    count_workers_prem_query_dates,
     get_cards_detail
 )
 from internal.app.models.card import Card
@@ -90,6 +91,15 @@ class AutomationCard(BaseAutomation):
                     continue
 
                 self.cursor.execute(
+                    sql.SQL(count_workers_prem_query_dates),
+                    values
+                )
+                prems_dates = self.cursor.fetchone()
+
+                if prems is None:
+                    continue
+
+                self.cursor.execute(
                     sql.SQL(count_workers_cards_sailed_in_general),
                     values
                 )
@@ -133,10 +143,10 @@ class AutomationCard(BaseAutomation):
                 )
 
                 if worker_id[1] == 6:
-                    if upsert_card_sales(self.cursor, month, year, cards_sailed[0], prems[1], card, worker_id[0]) is False:
+                    if upsert_card_sales(self.cursor, month, year, cards_sailed[0], prems_dates[1], card, worker_id[0]) is False:
                         return False
                 elif worker_id[1] == 8:
-                    if upsert_card_sales(self.cursor, month, year, cards_sailed[0], prems[2], card, worker_id[0]) is False:
+                    if upsert_card_sales(self.cursor, month, year, cards_sailed[0], prems_dates[2], card, worker_id[0]) is False:
                         return False
                 else:
                     logger.error("[{}] Error while setting card prems: worker role id not found".format(OP))

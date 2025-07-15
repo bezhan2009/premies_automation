@@ -11,6 +11,21 @@ count_workers_prem_query = """
         WHERE owner_name = %(owner_name)s
 """
 
+count_workers_prem_query_dates = """
+        SELECT
+            COUNT(*) AS cards_issued,
+            SUM(coast_cards) AS prem_cards,
+            SUM(coast_credits) AS prem_credits,
+            SUM(debt_osd) AS debt_osd,
+            SUM(debt_osk) AS debt_osk,
+            SUM(in_balance) AS in_balance,
+            SUM(out_balance) AS out_balance
+        FROM card_details
+        WHERE owner_name = %(owner_name)s
+          AND EXTRACT(YEAR FROM issue_date) = %(year)s
+          AND EXTRACT(MONTH FROM issue_date) = %(month)s
+"""
+
 count_workers_cards_sailed = """
         SELECT
             COUNT(*) AS cards_issued
