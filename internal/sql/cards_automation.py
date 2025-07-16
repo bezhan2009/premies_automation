@@ -67,10 +67,7 @@ count_workers_cards_activations_prem = """
 count_turnovers_and_activation_cards_worker = """
         SELECT
             COUNT(*) * 0.8 AS activated_cards_prem,
-            COUNT(*) FILTER (
-                WHERE EXTRACT(MONTH FROM issue_date) = %(month)s
-                  AND EXTRACT(YEAR FROM issue_date) = %(year)s
-            ) AS activated_cards,
+            COUNT(*) AS activated_cards,
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.00005 AS turnover
         FROM card_details
         WHERE owner_name = %(owner_name)s
@@ -81,10 +78,7 @@ count_turnovers_and_activation_cards_worker = """
 count_turnovers_and_activation_cards_worker_credit = """
         SELECT
             COUNT(*) * 0.8 AS activated_cards_prem,
-            COUNT(*) FILTER (
-                WHERE EXTRACT(MONTH FROM issue_date) = %(month)s
-                  AND EXTRACT(YEAR FROM issue_date) = %(year)s
-            ) AS activated_cards,
+            COUNT(*) AS activated_cards,
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.0001 AS turnover
         FROM card_details
         WHERE owner_name = %(owner_name)s
