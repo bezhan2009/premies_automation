@@ -49,7 +49,7 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
 
             worker_id = cursor.fetchone()
             if worker_id is None:
-                # logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
+                logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
                 continue
 
             values = (
