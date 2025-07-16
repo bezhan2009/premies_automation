@@ -7,6 +7,12 @@ def migrate():
 
     try:
         cursor.execute(
+            """
+            CREATE EXTENSION IF NOT EXISTS pg_trgm;
+            """
+        )
+
+        cursor.execute(
             """      
             CREATE TABLE IF NOT EXISTS mobile_bank (
                 id SERIAL PRIMARY KEY,

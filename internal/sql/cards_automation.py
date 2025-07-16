@@ -8,7 +8,7 @@ count_workers_prem_query = """
             SUM(in_balance) AS in_balance,
             SUM(out_balance) AS out_balance
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND issue_date >= DATE '2022-01-01'
           AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month';
 """
@@ -23,7 +23,7 @@ count_workers_prem_query_dates = """
             SUM(in_balance) AS in_balance,
             SUM(out_balance) AS out_balance
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND EXTRACT(YEAR FROM issue_date) = %(year)s
           AND EXTRACT(MONTH FROM issue_date) = %(month)s
 """
@@ -32,7 +32,7 @@ count_workers_cards_sailed = """
         SELECT
             COUNT(*) AS cards_issued
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND EXTRACT(YEAR FROM issue_date) = %(year)s
           AND EXTRACT(MONTH FROM issue_date) = %(month)s
 """
@@ -41,7 +41,7 @@ count_workers_cards_sailed_in_general = """
         SELECT
             COUNT(*) AS cards_issued
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND issue_date >= DATE '2022-01-01'
           AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month';
 """
@@ -50,7 +50,7 @@ count_workers_card_turnover_query = """
         SELECT
             SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND expire_date IS NOT NULL;
 """
 
@@ -59,7 +59,7 @@ count_workers_cards_activations_prem = """
             COUNT(*) AS cards_actived,
             (COUNT(*) * 0.8) AS cards_prems
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
@@ -70,7 +70,7 @@ count_turnovers_and_activation_cards_worker = """
             COUNT(*) AS activated_cards,
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.00005 AS turnover
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
@@ -81,7 +81,7 @@ count_turnovers_and_activation_cards_worker_credit = """
             COUNT(*) AS activated_cards,
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.0001 AS turnover
         FROM card_details
-        WHERE owner_name = %(owner_name)s
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
@@ -99,5 +99,5 @@ get_cards_detail = """
                coast_cards,
                coast_credits
         FROM card_details
-        WHERE owner_name = %(owner_name)s;
+        WHERE similarity(owner_name, %(owner_name)s) > 0.3;
 """
