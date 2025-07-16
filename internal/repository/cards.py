@@ -1,3 +1,5 @@
+import time
+
 from pandas.core.frame import DataFrame
 from psycopg2 import sql
 

@@ -6,13 +6,13 @@ from cryptography.fernet import Fernet
 
 
 def hash_sha256(input_string: str):
-    # Преобразуем строку в байты (UTF-8 кодировка)
-    bytes_input = input_string.encode('utf-8')
-    # Создаем SHA-256 хеш
-    sha256_hash = hashlib.sha256(bytes_input)
-    # Возвращаем хеш в шестнадцатеричном формате
-    return sha256_hash.hexdigest()
-    # return input_string
+    # # Преобразуем строку в байты (UTF-8 кодировка)
+    # bytes_input = input_string.encode('utf-8')
+    # # Создаем SHA-256 хеш
+    # sha256_hash = hashlib.sha256(bytes_input)
+    # # Возвращаем хеш в шестнадцатеричном формате
+    # return sha256_hash.hexdigest()
+    return input_string
 
 
 _key = None
