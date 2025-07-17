@@ -51,6 +51,8 @@ count_workers_card_turnover_query = """
             SUM(COALESCE(out_balance) + COALESCE(debt_osd)) * 0.00005 AS turnover
         FROM card_details
         WHERE similarity(owner_name, %(owner_name)s) > 0.3
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month'
           AND expire_date IS NOT NULL;
 """
 
@@ -60,6 +62,8 @@ count_workers_cards_activations_prem = """
             (COUNT(*) * 0.8) AS cards_prems
         FROM card_details
         WHERE similarity(owner_name, %(owner_name)s) > 0.3
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month'
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
@@ -71,6 +75,8 @@ count_turnovers_and_activation_cards_worker = """
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.00005 AS turnover
         FROM card_details
         WHERE similarity(owner_name, %(owner_name)s) > 0.3
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month'
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
@@ -82,6 +88,8 @@ count_turnovers_and_activation_cards_worker_credit = """
             SUM(COALESCE(out_balance, 0) + COALESCE(debt_osd, 0)) * 0.0001 AS turnover
         FROM card_details
         WHERE similarity(owner_name, %(owner_name)s) > 0.3
+          AND issue_date >= DATE '2022-01-01'
+          AND issue_date < make_date(%(year)s, %(month)s, 1) + interval '1 month'
           AND debt_osd > 0
           AND expire_date IS NOT NULL;
 """
