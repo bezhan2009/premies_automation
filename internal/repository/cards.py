@@ -49,9 +49,18 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
                 }
             )
 
+            upload_cards_stats(
+                month,
+                year,
+                parse_float(row['Оборот ДТ']),  # debt_osd
+                parse_float(row['Оборот КТ']),  # debt_osk
+                parse_float(row['Исх остаток']),  # out_balance
+                parse_float(row['Вх остаток '])  # in_balance
+            )
+
             worker_id = cursor.fetchone()
             if worker_id is None:
-                logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
+                # logger.warning("[{}] Failed to find worker id: {}".format(OP, str(row['Менеджер выпуска карты']).strip()))
                 continue
 
             values = (
@@ -87,6 +96,58 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
     conn.commit()
 
     return "Successfully uploaded cards"
+
+
+def upload_cards_stats(month: int, year: int, debt_osd: float, debt_osk: float, out_balance: float, in_balance: float) -> bool:
+    OP = "repository.upload_cards_stats"
+
+    conn = get_connection()
+    cursor = get_cursor()
+    try:
+        start_date, end_date = get_month_date_range(year, month)
+        created_ts = start_date
+
+        cursor.execute(
+            sql.SQL(
+                """
+                SELECT * FROM cards_stats
+                WHERE created_at >= %s AND created_at < %s
+                """
+            ),
+            (start_date, end_date)
+        )
+
+        cards_stats = cursor.fetchone()
+        if cards_stats is not None:
+            cursor.execute(
+                sql.SQL(
+                    """
+                    UPDATE cards_stats
+                    SET debt_osd = debt_osd + %s, 
+                        debt_osk = debt_osk + %s,
+                        out_balance = out_balance + %s,
+                        in_balance = in_balance + %s
+                    WHERE created_at >= %s AND created_at < %s
+                    """
+                ),
+                (debt_osd, debt_osk, out_balance, in_balance, start_date, end_date)
+            )
+        else:
+            cursor.execute(
+                sql.SQL(
+                    """
+                    INSERT INTO cards_stats (created_at, updated_at, debt_osd, debt_osk, out_balance, in_balance) 
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """
+                ),
+                (created_ts, created_ts, debt_osd, debt_osk, out_balance, in_balance)
+            )
+    except Exception as e:
+        logger.error("[{}] Error while uploading cards stats: {}".format(OP, str(e)))
+        raise e
+
+    conn.commit()
+    return True
 
 
 def clean_cards_table() -> Exception | str:
