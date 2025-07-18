@@ -27,6 +27,15 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
 
     for _, row in df.iterrows():
         try:
+            upload_cards_stats(
+                month,
+                year,
+                parse_float(row['Оборот ДТ']),  # debt_osd
+                parse_float(row['Оборот КТ']),  # debt_osk
+                parse_float(row['Исх остаток']),  # out_balance
+                parse_float(row['Вх остаток '])  # in_balance
+            )
+
             cursor.execute(
                 sql.SQL(get_card_by_code),
                 {
@@ -47,15 +56,6 @@ def upload_cards(df: DataFrame, coast_dict: dict, month: int, year: int) -> Exce
                 {
                     "owner_name": str(row['Менеджер выпуска карты']).strip()
                 }
-            )
-
-            upload_cards_stats(
-                month,
-                year,
-                parse_float(row['Оборот ДТ']),  # debt_osd
-                parse_float(row['Оборот КТ']),  # debt_osk
-                parse_float(row['Исх остаток']),  # out_balance
-                parse_float(row['Вх остаток '])  # in_balance
             )
 
             worker_id = cursor.fetchone()
