@@ -219,7 +219,7 @@ class AccountantAutomation(BaseAutomation):
         for acct in accountants:
             mapping[f"A{row}"] = acct.name
             mapping[f"B{row}"] = acct.salary
-            mapping[f"C{row}"] = acct.bonus
+            mapping[f"C{row}"] = round(acct.bonus, 2)
             row += 1
         return mapping
 

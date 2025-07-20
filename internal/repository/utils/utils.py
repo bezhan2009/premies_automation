@@ -36,10 +36,6 @@ def upsert_card_sales(cursor, month: int, year: int, cards_sailed: int, cards_pr
                 UPDATE card_sales
                 SET cards_sailed = %s,
                     cards_prem = %s,
-                    deb_osd = %s,
-                    deb_osk = %s,
-                    in_balance = %s,
-                    out_balance = %s,
                     cards_sailed_in_general = %s,
                     updated_at = %s
                 WHERE id = %s
@@ -47,10 +43,6 @@ def upsert_card_sales(cursor, month: int, year: int, cards_sailed: int, cards_pr
                 (
                     cards_sailed,
                     cards_prem,
-                    card.debt_osd,
-                    card.debt_osk,
-                    card.in_balance,
-                    card.out_balance,
                     card.cards_sailed_in_general,
                     created_ts,
                     record[0]
@@ -64,24 +56,16 @@ def upsert_card_sales(cursor, month: int, year: int, cards_sailed: int, cards_pr
                     updated_at,
                     cards_sailed,
                     cards_prem,
-                    deb_osd,
-                    deb_osk,
-                    in_balance,
-                    out_balance,
                     cards_sailed_in_general,
                     worker_id
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 (
                     created_ts,
                     created_ts,
                     cards_sailed,
                     cards_prem,
-                    card.debt_osd,
-                    card.debt_osk,
-                    card.in_balance,
-                    card.out_balance,
                     card.cards_sailed_in_general,
                     worker_id
                 )
