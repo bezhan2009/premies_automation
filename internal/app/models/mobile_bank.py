@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class MobileBank:
-    connects: str
+    connects: int
     prem: float
     owner_name: str

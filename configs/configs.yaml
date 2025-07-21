@@ -9,7 +9,7 @@ grpc:
   port: 50051
   max_workers: 10
 service:
-  mobile_bank_prem: 5
+  mobile_bank_prem: 10
 automation_details:
   def_excel_paths:
     def_card_prices: prices.xlsx

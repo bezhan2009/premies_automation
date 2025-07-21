@@ -46,6 +46,7 @@ class AutomationMobileBank(BaseAutomation):
             for mb in mb_details:
                 upload_mb_details(self.cursor, month, year, worker_id, mb)
         except Exception as e:
+            logger.error("Error in _set_mobile_bank_details: {}".format(e))
             return False
 
         return True
@@ -86,7 +87,7 @@ class AutomationMobileBank(BaseAutomation):
                     mobile_bank_sales[1],
                     worker_id[0]
                 )
-                # self._set_mobile_bank_details(month, year, worker_id[0], self._get_mobile_bank_details(owner[1], values))
+                self._set_mobile_bank_details(month, year, worker_id[0], self._get_mobile_bank_details(owner[1], values))
             except Exception as e:
                 logger.error("[{}] Error while setting mobile bank sales: {}".format(OP, e))
                 return False
