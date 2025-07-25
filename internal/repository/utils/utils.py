@@ -268,7 +268,7 @@ def upsert_mobile_bank_sales(cursor, month: int, year: int, mobile_bank_sales_pr
     return True
 
 
-def upsert_tus_marks(cursor, month: int, year: int, processes: float, worker_id: int) -> bool:
+def upsert_tus_marks(cursor, month: int, year: int, processes: float, tests: float, complaints: int, worker_id: int) -> bool:
     try:
         start_date, end_date = get_month_date_range(year, month)
         created_ts = start_date
@@ -284,23 +284,44 @@ def upsert_tus_marks(cursor, month: int, year: int, processes: float, worker_id:
         record = cursor.fetchone()
 
         if record:
-            cursor.execute(
+            update_fields = []
+            update_values = []
+
+            if processes != 0:
+                update_fields.append("call_center = %s")
+                update_values.append(processes)
+
+            if tests != 0:
+                update_fields.append("tests = %s")
+                update_values.append(tests)
+
+            if complaints != 0:
+                update_fields.append("complaint = %s")
+                update_values.append(complaints)
+
+            # обновляем только если есть что обновлять
+            if update_fields:
+                update_fields.append("updated_at = %s")
+                update_values.append(created_ts)
+                update_values.append(record[0])
+
+                query = f"""
+                    UPDATE service_qualities
+                    SET {', '.join(update_fields)}
+                    WHERE id = %s
                 """
-                UPDATE service_qualities
-                SET call_center = %s,
-                    updated_at = %s
-                WHERE id = %s
-                """,
-                (processes, created_ts, record[0])
-            )
+                cursor.execute(query, tuple(update_values))
+
         else:
+            # если записи нет, вставляем все значения (вставляем даже если какие-то = 0)
             cursor.execute(
                 """
-                INSERT INTO service_qualities(created_at, updated_at, call_center, worker_id)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO service_qualities(created_at, updated_at, call_center, tests, complaint, worker_id)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (created_ts, created_ts, processes, worker_id)
+                (created_ts, created_ts, processes, tests, complaints, worker_id)
             )
+
     except Exception as e:
         logger.error("Error in upsert_tus_marks: {}".format(e))
         return False

@@ -32,6 +32,22 @@ def migrate():
             """
         )
 
+        # Добавление колонки tests, если её нет
+        cursor.execute(
+            """
+            ALTER TABLE tus_marks
+            ADD COLUMN IF NOT EXISTS tests FLOAT;
+            """
+        )
+
+        # Добавление колонки complaints, если её нет
+        cursor.execute(
+            """
+            ALTER TABLE tus_marks
+            ADD COLUMN IF NOT EXISTS complaints INTEGER;
+            """
+        )
+
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS card_prices (

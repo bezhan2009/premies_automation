@@ -4,7 +4,10 @@ from internal.lib.encypter import hash_sha256
 from internal.repository.utils.utils import (upsert_tus_marks)
 from internal.service.automation.base_automation import BaseAutomation
 from internal.sql.general import get_worker_id_by_owner_name
-from internal.sql.tus_marks import call_center_procent
+from internal.sql.tus_marks import (
+    call_center_procent,
+    call_center_tests_and_complaints
+)
 from pkg.logger.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -33,6 +36,15 @@ class AutomationTusMarks(BaseAutomation):
                     continue
 
                 self.cursor.execute(
+                    sql.SQL(call_center_tests_and_complaints),
+                    values
+                )
+
+                tests_and_complaints = self.cursor.fetchone()
+                if tests_and_complaints is None:
+                    tests_and_complaints = [0, 0]
+
+                self.cursor.execute(
                     sql.SQL(get_worker_id_by_owner_name),
                     {
                         "owner_name": owner[1],
@@ -41,7 +53,7 @@ class AutomationTusMarks(BaseAutomation):
 
                 worker_id = self.cursor.fetchone()
 
-                upsert_tus_marks(self.cursor, month, year, average_score[0], worker_id[0])
+                upsert_tus_marks(self.cursor, month, year, average_score[0], tests_and_complaints[0], tests_and_complaints[1], worker_id[0])
             except Exception as e:
                 logger.error(f"[{self.OP}] Error while inserting workers average score: {e}")
                 return False

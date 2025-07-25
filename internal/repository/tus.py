@@ -18,10 +18,12 @@ def tus_excel_upload(df: DataFrame) -> Exception | str:
     for _, row in df.iterrows():
         try:
             cursor.execute(
-                sql.SQL("INSERT INTO tus_marks (surname, mark) VALUES (%s, %s)"),
+                sql.SQL("INSERT INTO tus_marks (surname, mark, tests, complaints) VALUES (%s, %s, %s, %s)"),
                 [
                     hash_sha256(row['ФИО']),
-                    row['БАЛЛ']
+                    row['БАЛЛ'],
+                    row['ОЦЕНКА'],
+                    row['ЖАЛОБЫ'],
                 ]
             )
         except Exception as e:
