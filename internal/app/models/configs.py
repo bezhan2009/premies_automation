@@ -28,6 +28,7 @@ class DefExcelPaths:
     def_report_template_cards: str
     def_report_template_credits: str
     def_report_template_accountant: str
+    def_report_template_applications: str
 
 
 @dataclass

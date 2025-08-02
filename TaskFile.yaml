@@ -7,22 +7,24 @@ tasks:
       - stg
     desc: "Sets gen folders"
     cmds:
-      - mkdir ./gen/python
-      - mkdir ./gen/python/tus
-      - mkdir ./gen/python/mobile_bank
-      - mkdir ./gen/python/cards
-      - mkdir ./gen/python/card_prices
-      - mkdir ./gen/python/reports
-      - mkdir ./gen/python/accountant
-      - mkdir ./gen/python/upload_file
-      - mkdir ./gen/go
-      - mkdir ./gen/go/tus
-      - mkdir ./gen/go/mobile_bank
-      - mkdir ./gen/go/cards
-      - mkdir ./gen/go/card_prices
-      - mkdir ./gen/go/reports
-      - mkdir ./gen/go/accountant
-      - mkdir ./gen/go/upload_file
+      - mkdir -p ./gen/python
+      - mkdir -p ./gen/python/tus
+      - mkdir -p ./gen/python/mobile_bank
+      - mkdir -p ./gen/python/cards
+      - mkdir -p ./gen/python/card_prices
+      - mkdir -p ./gen/python/reports
+      - mkdir -p ./gen/python/accountant
+      - mkdir -p ./gen/python/upload_file
+      - mkdir -p ./gen/python/application
+      - mkdir -p ./gen/go
+      - mkdir -p ./gen/go/tus
+      - mkdir -p ./gen/go/mobile_bank
+      - mkdir -p ./gen/go/cards
+      - mkdir -p ./gen/go/card_prices
+      - mkdir -p ./gen/go/reports
+      - mkdir -p ./gen/go/accountant
+      - mkdir -p ./gen/go/upload_file
+      - mkdir -p ./gen/go/application
 
   generatetus:
     aliases:
@@ -75,6 +77,13 @@ tasks:
     cmds:
       - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/upload_file/ --grpc_python_out=./gen/python/upload_file/ proto/upload_file.proto
 
+  generateapplication:
+    aliases:
+      - gen-app
+    desc: "Generate Python code from applications proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/application/ --grpc_python_out=./gen/python/application/ proto/application.proto
+
   generatetus-go:
     aliases:
       - gen-tus-go
@@ -119,6 +128,12 @@ tasks:
     cmds:
       - protoc -I=proto --go_out=./gen/go/accountant/ --go-grpc_out=./gen/go/accountant/ proto/accountant.proto
 
+  generateapplication-go:
+    aliases:
+      - gen-acc-go
+    desc: "Generate go code from applications proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/application/ --go-grpc_out=./gen/go/application/ proto/application.proto
 
   generatesavefile-go:
     aliases:
@@ -130,6 +145,7 @@ tasks:
   generate-all:
     desc: "Generate all proto files for both Python and Go"
     deps:
+      - setgenfiles
       - generatetus
       - generatemobilebank
       - generatecards
@@ -137,6 +153,7 @@ tasks:
       - generatereports
       - generateaccountant
       - generatesavefile
+      - generateapplication
       - generatetus-go
       - generatemobilebank-go
       - generatecards-go
@@ -144,3 +161,4 @@ tasks:
       - generatereports-go
       - generateaccountant-go
       - generatesavefile-go
+      - generateapplication-go

@@ -5,6 +5,7 @@ from gen.python.reports import reports_pb2_grpc
 from gen.python.tus import tus_pb2_grpc
 from gen.python.upload_file import upload_file_pb2_grpc
 from gen.python.accountant import accountant_pb2_grpc
+from gen.python.application import application_pb2_grpc
 from internal.grpc.card_prices import CardPricesServiceServicer
 from internal.grpc.cards import CardsServiceServicer
 from internal.grpc.mobile_bank import MobileBankServiceServicer
@@ -12,6 +13,7 @@ from internal.grpc.reports import ReportsServiceServicer
 from internal.grpc.tus import TusServiceServicer
 from internal.grpc.upload_file import UploadFileService
 from internal.grpc.accountant import AccountantsService
+from internal.grpc.application import ApplicationService
 from pkg.logger.logger import setup_logger
 
 
@@ -39,3 +41,6 @@ def add_services(server):
 
     logger.info("Adding AccountantsServicer...")
     accountant_pb2_grpc.add_AccountantsServiceServicer_to_server(AccountantsService(), server)
+
+    logger.info("Adding ApplicationService...")
+    application_pb2_grpc.add_ApplicationServiceServicer_to_server(ApplicationService(), server)

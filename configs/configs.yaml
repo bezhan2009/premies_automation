@@ -16,6 +16,7 @@ automation_details:
     def_report_template_cards: uploads/rep_template_cards.xlsx
     def_report_template_credits: uploads/rep_template_credits.xlsx
     def_report_template_accountant: uploads/rep_accountant.xlsx
+    def_report_template_applications: uploads/rep_applications_template.xlsx
   def_out_paths:
     accountant_dir_reports: uploads/excel_accountant
     output_dir_reports: uploads/excel_reports
