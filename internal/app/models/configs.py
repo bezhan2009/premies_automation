@@ -29,6 +29,7 @@ class DefExcelPaths:
     def_report_template_credits: str
     def_report_template_accountant: str
     def_report_template_applications: str
+    def_report_template_poll: str
 
 
 @dataclass
@@ -37,12 +38,13 @@ class DefOutPaths:
     output_dir_reports: str
     zip_file_path: str
     zip_reports_file_path: str
+    docx_reports_file_path: str
     uploaded_files_path: str
 
 
 @dataclass
 class AutomationDetails:
-    def_excel_paths: DefExcelPaths
+    def_template_paths: DefExcelPaths
     def_out_paths: DefOutPaths
 
 

@@ -7,7 +7,7 @@ from internal.service import application
 class ApplicationService(application_pb2_grpc.ApplicationServiceServicer):
     def CreateXLSXApplications(self, request, context):
         try:
-            print("=== gRPC CreateXLSXAccountant STARTED ===")
+            print("=== gRPC CreateXLSXApplications STARTED ===")
             result = application.create_xlsx_file_applications(request.applications_ids)
             return application_pb2.CreateXLSXApplicationResponse(xlsx_path=str(result))
         except Exception as e:

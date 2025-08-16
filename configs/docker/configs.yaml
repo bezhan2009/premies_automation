@@ -11,15 +11,17 @@ grpc:
 service:
   mobile_bank_prem: 10
 automation_details:
-  def_excel_paths:
+  def_template_paths:
     def_card_prices: prices.xlsx
     def_report_template_cards: uploads/rep_template_cards.xlsx
     def_report_template_credits: uploads/rep_template_credits.xlsx
     def_report_template_accountant: uploads/rep_accountant.xlsx
     def_report_template_applications: uploads/rep_applications_template.xlsx
+    def_report_template_poll: uploads/rep_poll.docx
   def_out_paths:
     accountant_dir_reports: uploads/excel_accountant
     output_dir_reports: uploads/excel_reports
     zip_file_path: employee_excels.zip
     zip_reports_file_path: uploads/output_excels_zip
+    docx_reports_file_path: uploads/output_docx
     uploaded_files_path: uploads/uploaded

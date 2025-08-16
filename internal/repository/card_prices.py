@@ -1,5 +1,6 @@
 from pandas.core.frame import DataFrame
 from psycopg2 import sql
+from contextlib import closing
 
 from pkg.db.connect import (get_connection, get_cursor)
 from pkg.logger.logger import setup_logger
@@ -13,62 +14,63 @@ def upload_card_prices(price_df: DataFrame) -> Exception | str:
     logger.info("[{}] Uploading card prices".format(OP))
 
     conn = get_connection()
-    cursor = get_cursor()
 
-    for _, row in price_df.iterrows():
-        try:
-            cursor.execute(
-                sql.SQL("SELECT * FROM card_prices WHERE dcl_name = %s"),
-                [row['DCL_NAME']]
-            )
+    try:
+        with closing(get_cursor()) as cursor:
+            for _, row in price_df.iterrows():
+                try:
+                    cursor.execute(
+                        sql.SQL("SELECT * FROM card_prices WHERE dcl_name = %s"),
+                        [row['DCL_NAME']]
+                    )
 
-            price_row = cursor.fetchone()
-            if price_row:
-                continue
+                    price_row = cursor.fetchone()
+                    if price_row:
+                        continue
 
-            cursor.execute(
-                sql.SQL(
-                    "INSERT INTO card_prices(dcl_name, coast_credits, coast_cards, category) VALUES (%s, %s, %s, %s)"
-                ),
-                [row['DCL_NAME'], row['CoastCredit'], row['CoastCards'], row['Category']]
-            )
-        except Exception as e:
-            logger.error("[{}] Error while setting the data to card prices table: {}".format(OP, str(e)))
-            raise e
+                    cursor.execute(
+                        sql.SQL(
+                            "INSERT INTO card_prices(dcl_name, coast_credits, coast_cards, category) VALUES (%s, %s, %s, %s)"
+                        ),
+                        [row['DCL_NAME'], row['CoastCredit'], row['CoastCards'], row['Category']]
+                    )
+                except Exception as e:
+                    logger.error("[{}] Error while setting the data to card prices table: {}".format(OP, str(e)))
+                    raise e
 
-    conn.commit()
+        conn.commit()
 
-    res_saving_to_dict = upload_card_prices_to_dict()
-    if type(res_saving_to_dict) is Exception:
-        logger.error(str(res_saving_to_dict))
-        return res_saving_to_dict
+        res_saving_to_dict = upload_card_prices_to_dict()
+        if isinstance(res_saving_to_dict, Exception):
+            logger.error(str(res_saving_to_dict))
+            return res_saving_to_dict
 
-    return "Successfully uploaded card prices"
+        return "Successfully uploaded card prices"
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 
 def upload_card_prices_to_dict() -> Exception | dict:
     coast_dict = {}
-
     OP = "repository.upload_card_prices_to_dict"
 
     logger.info("[{}] Uploading card prices to dict".format(OP))
 
-    cursor = get_cursor()
+    with closing(get_cursor()) as cursor:
+        try:
+            cursor.execute("SELECT * FROM card_prices")
+            card_prices = cursor.fetchall()
+        except Exception as e:
+            logger.error("Error while getting card prices from database: {}".format(str(e)))
+            raise e
 
-    try:
-        cursor.execute("SELECT * FROM card_prices")
-        card_prices = cursor.fetchall()
-    except Exception as e:
-        logger.error("Error while getting card prices from database: {}".format(str(e)))
-        raise e
+        if not card_prices:
+            logger.error("No card prices were found")
+            raise Exception("No card prices were found")
 
-    if not card_prices:
-        # Вместо возврата Exception, лучше выбросить
-        logger.error("No card prices were found")
-        raise Exception("No card prices were found")
-
-    for card_price in card_prices:
-        coast_dict[str(card_price[1]).strip()] = [float(card_price[2]), float(card_price[3])]
+        for card_price in card_prices:
+            coast_dict[str(card_price[1]).strip()] = [float(card_price[2]), float(card_price[3])]
 
     return coast_dict
 
@@ -79,16 +81,20 @@ def clean_card_prices_table() -> Exception | str:
     logger.info("[{}] Cleaning cards price table".format(OP))
 
     conn = get_connection()
-    cursor = get_cursor()
 
     try:
-        cursor.execute(
-            sql.SQL("DELETE FROM card_prices"),
-        )
-        conn.commit()
-    except Exception as e:
-        logger.error("[{}] Error while cleaning cards price table: {}".format(OP, str(e)))
-        raise e
+        with closing(get_cursor()) as cursor:
+            try:
+                cursor.execute(
+                    sql.SQL("DELETE FROM card_prices"),
+                )
+                conn.commit()
+            except Exception as e:
+                logger.error("[{}] Error while cleaning cards price table: {}".format(OP, str(e)))
+                raise e
 
-    logger.info("[{}] Cards price table cleaned successfully".format(OP))
-    return "Successfully cleaned cards price table"
+        logger.info("[{}] Cards price table cleaned successfully".format(OP))
+        return "Successfully cleaned cards price table"
+    except Exception as e:
+        conn.rollback()
+        raise e

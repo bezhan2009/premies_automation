@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "gen/go/application";
+
+service PollService {
+  rpc CreateDOCXPoll (CreateDOCXPollRequest) returns (CreateDOCXPollResponse);
+}
+
+message CreateDOCXPollRequest {
+  repeated int32 applications_ids = 1;
+}
+
+message CreateDOCXPollResponse {
+  string zip_docx_path = 1;
+}

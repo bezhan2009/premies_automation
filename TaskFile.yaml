@@ -16,6 +16,7 @@ tasks:
       - mkdir -p ./gen/python/accountant
       - mkdir -p ./gen/python/upload_file
       - mkdir -p ./gen/python/application
+      - mkdir -p ./gen/python/poll
       - mkdir -p ./gen/go
       - mkdir -p ./gen/go/tus
       - mkdir -p ./gen/go/mobile_bank
@@ -25,6 +26,7 @@ tasks:
       - mkdir -p ./gen/go/accountant
       - mkdir -p ./gen/go/upload_file
       - mkdir -p ./gen/go/application
+      - mkdir -p ./gen/go/poll
 
   generatetus:
     aliases:
@@ -84,6 +86,13 @@ tasks:
     cmds:
       - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/application/ --grpc_python_out=./gen/python/application/ proto/application.proto
 
+  generatepoll:
+    aliases:
+      - gen-poll
+    desc: "Generate Python code from polls proto files"
+    cmds:
+      - python -m grpc_tools.protoc -I=proto --python_out=./gen/python/poll/ --grpc_python_out=./gen/python/poll/ proto/poll.proto
+
   generatetus-go:
     aliases:
       - gen-tus-go
@@ -135,6 +144,13 @@ tasks:
     cmds:
       - protoc -I=proto --go_out=./gen/go/application/ --go-grpc_out=./gen/go/application/ proto/application.proto
 
+  generatepoll-go:
+    aliases:
+      - gen-poll-go
+    desc: "Generate go code from poll proto files"
+    cmds:
+      - protoc -I=proto --go_out=./gen/go/poll/ --go-grpc_out=./gen/go/poll/ proto/poll.proto
+
   generatesavefile-go:
     aliases:
       - gen-save-file-go
@@ -154,6 +170,7 @@ tasks:
       - generateaccountant
       - generatesavefile
       - generateapplication
+      - generatepoll
       - generatetus-go
       - generatemobilebank-go
       - generatecards-go
@@ -162,3 +179,4 @@ tasks:
       - generateaccountant-go
       - generatesavefile-go
       - generateapplication-go
+      - generatepoll-go

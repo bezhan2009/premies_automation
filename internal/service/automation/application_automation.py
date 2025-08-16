@@ -28,7 +28,7 @@ class ApplicationAutomation(BaseAutomation):
 
     def _create_application_excel(self, applications: List[ApplicationInfo]) -> str:
         wb = openpyxl.load_workbook(
-            self.automation_configs.def_excel_paths.def_report_template_applications
+            self.automation_configs.def_template_paths.def_report_template_applications
         )
         ws = wb.active
 
@@ -66,7 +66,7 @@ class ApplicationAutomation(BaseAutomation):
         mapping = {}
         row = 6
         for app in applications:
-            mapping[f"A{row}"] = app.tax_workers_code
+            mapping[f"A{row}"] = app.inn
             mapping[f"B{row}"] = app.surname
             mapping[f"C{row}"] = app.name
             mapping[f"D{row}"] = app.patronymic

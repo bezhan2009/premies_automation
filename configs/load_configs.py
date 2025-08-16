@@ -22,7 +22,7 @@ def load_config(path: str):
 
         automation = raw['automation_details']
         automation_details = AutomationDetails(
-            def_excel_paths=DefExcelPaths(**automation['def_excel_paths']),
+            def_template_paths=DefExcelPaths(**automation['def_template_paths']),
             def_out_paths=DefOutPaths(**automation['def_out_paths'])
         )
 

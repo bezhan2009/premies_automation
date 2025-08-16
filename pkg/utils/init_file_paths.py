@@ -13,9 +13,9 @@ def ensure_directories_exist():
 
     # Список всех путей из конфига, которые нужно проверить/создать
     paths_to_check = [
-        config.automation_details.def_excel_paths.def_report_template_cards.rsplit('/', 1)[0],
-        config.automation_details.def_excel_paths.def_report_template_credits.rsplit('/', 1)[0],
-        config.automation_details.def_excel_paths.def_report_template_accountant.rsplit('/', 1)[0],
+        config.automation_details.def_template_paths.def_report_template_cards.rsplit('/', 1)[0],
+        config.automation_details.def_template_paths.def_report_template_credits.rsplit('/', 1)[0],
+        config.automation_details.def_template_paths.def_report_template_accountant.rsplit('/', 1)[0],
         config.automation_details.def_out_paths.accountant_dir_reports,
         config.automation_details.def_out_paths.output_dir_reports,
         config.automation_details.def_out_paths.zip_reports_file_path,

@@ -1,5 +1,7 @@
 from typing import List
 
+from contextlib import closing
+
 from psycopg2 import sql
 
 from internal.app.models.application import ApplicationInfo
@@ -61,7 +63,7 @@ def get_application_by_ids(application_ids: List[int]) -> List[ApplicationInfo]:
 
     try:
         conn = get_connection()
-        with conn.cursor() as cursor:
+        with closing(conn.cursor()) as cursor:
             cursor.execute(query, application_ids)
             rows = cursor.fetchall()
 

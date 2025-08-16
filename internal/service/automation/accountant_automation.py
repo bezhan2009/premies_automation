@@ -192,7 +192,7 @@ class AccountantAutomation(BaseAutomation):
 
     def _create_accountant_excel(self, accountants: List[Accountant]) -> str:
         wb = openpyxl.load_workbook(
-            self.automation_configs.def_excel_paths.def_report_template_accountant
+            self.automation_configs.def_template_paths.def_report_template_accountant
         )
         ws = wb.active
 

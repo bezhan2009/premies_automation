@@ -1,14 +1,15 @@
+from contextlib import closing
 from internal.app.models.mobile_bank import MobileBank
-from internal.lib.date import (
-    get_month_date_range
-)
+from internal.lib.date import get_month_date_range
 from configs.load_configs import get_config
 from pkg.logger.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 
-def upload_mb_details(cursor, month: int, year: int, worker_id: int, mb: MobileBank):
+def upload_mb_details(cursor, month: int, year: int, worker_id: int, mb: MobileBank) -> bool:
+    OP = "repository.upload_mb_details"
+
     try:
         configs = get_config()
         start_date, end_date = get_month_date_range(year, month)
@@ -24,6 +25,8 @@ def upload_mb_details(cursor, month: int, year: int, worker_id: int, mb: MobileB
         )
         record = cursor.fetchone()
 
+        prem = configs.service.mobile_bank_prem * mb.connects
+
         if record:
             cursor.execute(
                 """
@@ -32,19 +35,22 @@ def upload_mb_details(cursor, month: int, year: int, worker_id: int, mb: MobileB
                     updated_at = %s
                 WHERE id = %s
                 """,
-                (configs.service.mobile_bank_prem * mb.connects, created_ts, record[0])
+                (prem, created_ts, record[0])
             )
+            logger.debug(f"[{OP}] Updated record for worker {worker_id}")
         else:
             cursor.execute(
                 """
-                INSERT INTO mobile_bank_details(created_at, updated_at, prem, worker_id)
+                INSERT INTO mobile_bank_details
+                (created_at, updated_at, prem, worker_id)
                 VALUES (%s, %s, %s, %s)
                 """,
-                (created_ts, created_ts, configs.service.mobile_bank_prem * mb.connects, worker_id)
+                (created_ts, created_ts, prem, worker_id)
             )
+            logger.debug(f"[{OP}] Created new record for worker {worker_id}")
+
+        return True
+
     except Exception as e:
-        logger.error("Error in upload_mb_details: {}".format(e))
+        logger.error(f"[{OP}] Error processing worker {worker_id}: {str(e)}")
         raise e
-
-    return True
-

@@ -193,9 +193,9 @@ class ReportsAutomation(BaseAutomation):
     def get_right_template_for_worker(self, type_worker: str) -> str:
         match type_worker:
             case "Корт":
-                return self.automation_configs.def_excel_paths.def_report_template_cards
+                return self.automation_configs.def_template_paths.def_report_template_cards
             case "Карзхо ва дигар":
-                return self.automation_configs.def_excel_paths.def_report_template_credits
+                return self.automation_configs.def_template_paths.def_report_template_credits
             case _:
                 logger.error(f"[{self.OP}.get_right_template_for_worker] Undefined role error")
                 raise UndefinedRoleError("Undefined role")
